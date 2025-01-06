@@ -220,13 +220,19 @@ def list_tasks():
 
 def main():
     while True:
-        nuxt()
-        IP()
-        account_info()
-        sync()
-        get_promos()
-        game_config()
-        countdown_timer(random.randint(1800, 11000),'До следующего логина: ')
-        time.sleep(5)
+        try:
+            nuxt()
+            IP()
+            account_info()
+            sync()
+            get_promos()
+            game_config()
+            countdown_timer(random.randint(1800, 11000),'До следующего логина: ')
+            time.sleep(5)
+        except Exception as error:
+            print(f'Ошибка {error}')
+            time.sleep(5)
+            return main()
+
 if __name__ == "__main__":
     main()
