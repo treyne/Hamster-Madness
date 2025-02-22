@@ -131,7 +131,7 @@ def sync():
             debug_print('sync JSON = ', response_json)
             season2_config_version = response.headers.get('season2-config-version')  # Получаем значение из заголовков
             debug_print('season2-config-version: ', season2_config_version)
-            return season2_config_version  # Возвращаем значение заголовка
+            return season2_config_version,response_json  # Возвращаем значение заголовка
         except ValueError as e:  # JSONDecodeError -> ValueError в httpx
             debug_print("JSON decode error: ", e)
             return None
@@ -206,28 +206,49 @@ def command(cmd):
             except json.JSONDecodeError as e:
                 debug_print("JSON decode error: ", e)
                 return None
-    
     except httpx.RequestError as e:
         debug_print(f"Ошибка сети: {e}")
         return None
     return None                
 
 
+                # "genre": "Clicker",
+				# "genre": "Runner",
+				# "genre": "Puzzle",
+				# "genre": "Arcade",
+				# "genre": "Platformer",
+				# "genre": "Tycoon",
+				# "genre": "VisualNovel",
+				# "genre": "Adventure",
+				# "genre": "Shooter",
+				# "genre": "Simulator",
+				# "genre": "RPG",
+				# "genre": "Match-3",
+				# "genre": "Action",
+				# "genre": "Strategy",
+				# "genre": "Slots",
+				# "genre": "MMORPG",
+				# "genre": "VRgame",
+				# "genre": "NFTGame"
 
 
-
-def select_game(JSON,setting):
+def select_game(JSON,setting,genres):
     random_adjective = random.choice(JSON["config"]["gameAdjectives"])
     settings = JSON.get("config", {}).get("settings", [])
     for item in settings:
         if item.get("setting") == setting:
             names = item.get("names", [])
-            if names:
-                return random_adjective + ' ' + random.choice(names)  # Выбираем случайное имя
-    return None  # Если подходящий элемент не найден
-    
+            iconId = (genres + "_" + item.get("iconId", [])).replace((genres + "_")[0], (genres + "_")[0].lower(), 1)
+            if names and iconId:
+                gameName = random_adjective + ' ' + random.choice(names)  # Выбираем случайное имя
+    return gameName, iconId
 
 
+
+def ZoiPM(set_genre,current_genre,iconId,set_setting,gameName):
+    if current_genre == "Clicker":
+        command({"command":{"type":"ChangeGameInDevelopment","genre":set_genre,"setting":set_setting,"name":gameName,"iconId":iconId}})
+# {"command":{"type":"ChangeGameInDevelopment","genre":"Puzzle","setting":"Sports","name":"Super Tournament","iconId":"puzzle_sports"}}
 
 
 
@@ -243,16 +264,20 @@ def main():
     while True:
         try:
             IP()
-            
             #account_info()
-            season2_config_version = sync()
+            set_genre = "Platformer"
+            set_setting = "Sports"
+            
+            season2_config_version,user = sync()
+            current_genre = user["user"]["game"]["genre"]
             game_cfg = game_config(season2_config_version)
-            gameName = select_game(game_cfg,"Sports")
-            print (gameName)
+            gameName,iconId = select_game(game_cfg,set_setting,set_genre)
             command({"command":{"type":"ClaimReleasedGamesRewards"}}) #Собираем ништяки
+            print(f'iconId =  {iconId}                                        !!!!!!!!!!!!!!!!')
+            ZoiPM(set_genre,current_genre,iconId,set_setting,gameName)
             # get_promos()
-            countdown_timer(random.randint(1800, 11000),'До следующего логина: ')
-            time.sleep(50)
+            countdown_timer(random.randint(180, 355),'До следующего логина: ')
+            time.sleep(5)
         except Exception as error:
             print(f'Ошибка {error}')
             time.sleep(5)
