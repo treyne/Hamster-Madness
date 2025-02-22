@@ -165,29 +165,52 @@ def IP():
         
    
         
+
+                
+                
 def get_promos():
-#-----------------------------------------------###OPTIONS###-----------------------------------------------#  
-        resp = requests.options('https://api.hamsterkombatgame.io/season2/get-promos', 
-        headers=get_headers_opt())
-        print(f"get_promos [options] Status Code: {resp.status_code}")
-        
-        time.sleep(3)
-#-----------------------------------------------###POST###-----------------------------------------------#     
-        resp = requests.post('https://api.hamsterkombatgame.io/season2/get-promos', 
-        headers=get_headers_post(Bearer))
-        print(f"get_promos [post] Status Code: {resp.status_code}")
-        if resp.content:
+    url = f"{BASE_URL}/season2/get-promos"
+    perform_options_request(url, "POST")
+    headers_post = get_headers_post(Bearer)  # Получаем заголовки POST запроса
+
+    with httpx.Client(http2=True, timeout=10.0) as client:
+        response = client.post(url, headers=headers_post, json={})
+
+    debug_print(f"Status Code: {response.status_code}")
+    if response.content:
+        try:
+            response_json = response.json()
+            debug_print('get_promos = ', response_json)
+            return response_json
+        except ValueError as e:  # JSONDecodeError -> ValueError в httpx
+            debug_print("JSON decode error: ", e)
+            return None
+    return None
+                
+                
+                
+           
+def command(cmd):
+    url = f"{BASE_URL}/season2/command"
+    perform_options_request(url,"POST")  # Выполняем OPTIONS-запрос
+    headers_post = get_headers_post(Bearer)  # Получаем заголовки для POST-запроса
+    try:
+        with httpx.Client(http2=True, timeout=10.0) as client:
+            response = client.post(url, headers=headers_post, json={cmd})
+        debug_print(f"Status Code: {response.status_code}")
+        if response.content:
             try:
-                response_json = resp.json()
-                debug_print('get_promos JSON = ', response_json)
+                response_json = response.json()
+                debug_print('command JSON = ', response_json)
                 return response_json
             except json.JSONDecodeError as e:
                 debug_print("JSON decode error: ", e)
-                
-                
-                
-                
-                
+                return None
+    
+    except httpx.RequestError as e:
+        debug_print(f"Ошибка сети: {e}")
+        return None
+    return None                
 
 
 
@@ -197,18 +220,18 @@ def get_promos():
         
         
 
-    
+
 
 def main():
     while True:
         try:
-            # IP()
-            # account_info()
+            IP()
+            account_info()
             season2_config_version = sync()
-            print (season2_config_version)
             game_config(season2_config_version)
+            command("command":{"type":"ClaimReleasedGamesRewards"}) #Собираем ништяки
             # get_promos()
-            # countdown_timer(random.randint(1800, 11000),'До следующего логина: ')
+            countdown_timer(random.randint(1800, 11000),'До следующего логина: ')
             time.sleep(50)
         except Exception as error:
             print(f'Ошибка {error}')
