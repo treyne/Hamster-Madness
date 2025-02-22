@@ -196,7 +196,7 @@ def command(cmd):
     headers_post = get_headers_post(Bearer)  # Получаем заголовки для POST-запроса
     try:
         with httpx.Client(http2=True, timeout=10.0) as client:
-            response = client.post(url, headers=headers_post, json={cmd})
+            response = client.post(url, headers=headers_post, json=cmd)
         debug_print(f"Status Code: {response.status_code}")
         if response.content:
             try:
@@ -216,20 +216,40 @@ def command(cmd):
 
 
 
+def select_game(JSON,setting):
+    random_adjective = random.choice(JSON["config"]["gameAdjectives"])
+    settings = JSON.get("config", {}).get("settings", [])
+    for item in settings:
+        if item.get("setting") == setting:
+            names = item.get("names", [])
+            if names:
+                return random_adjective + ' ' + random.choice(names)  # Выбираем случайное имя
+    return None  # Если подходящий элемент не найден
+    
+
+
+
+
+
+
+
            
         
         
-
+# command({"command": {"type": "ApplyTaps", "progress": {"DEV": 400, "ART": 328, "GD": 377}, "funProgress": 101}}) #TAPS
 
 
 def main():
     while True:
         try:
             IP()
-            account_info()
+            
+            #account_info()
             season2_config_version = sync()
-            game_config(season2_config_version)
-            command("command":{"type":"ClaimReleasedGamesRewards"}) #Собираем ништяки
+            game_cfg = game_config(season2_config_version)
+            gameName = select_game(game_cfg,"Sports")
+            print (gameName)
+            command({"command":{"type":"ClaimReleasedGamesRewards"}}) #Собираем ништяки
             # get_promos()
             countdown_timer(random.randint(1800, 11000),'До следующего логина: ')
             time.sleep(50)
