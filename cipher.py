@@ -141,30 +141,25 @@ def command(cmd):
 
 
 def main():
-    while True:
-        try:
-           
-            season2_config_version,user = sync()
-            game_cfg = game_config(season2_config_version)
-            encoded_str = game_cfg["config"]["dailyCiphers"][0]["cipherEncoded"]
-            # Удаляем четвертый символ с начала строки
-            modified_str = encoded_str[:3] + encoded_str[4:]
-            print (modified_str)
-            # Декодируем строку из base64
-            decoded_bytes = base64.b64decode(modified_str)
-            decoded_str = decoded_bytes.decode('utf-8')
-            print (decoded_str)
+    try:
+        season2_config_version,user = sync()
+        game_cfg = game_config(season2_config_version)
+        encoded_str = game_cfg["config"]["dailyCiphers"][0]["cipherEncoded"]
+        # Удаляем четвертый символ с начала строки
+        modified_str = encoded_str[:3] + encoded_str[4:]
+  
+        # Декодируем строку из base64
+        decoded_bytes = base64.b64decode(modified_str)
+        decoded_str = decoded_bytes.decode('utf-8')
+        print (decoded_str)
+        command({"command":{"type":"ClaimDailyCipher","cipher":decoded_str}}) #Вводим шифр
 
-            
-            
-            # command({"command":{"type":"ClaimReleasedGamesRewards"}}) #Собираем ништяки
-
-            countdown_timer(random.randint(180, 355),'До следующего логина: ')
-            time.sleep(5)
-        except Exception as error:
-            print(f'Ошибка {error}')
-            time.sleep(5)
-            return main()
+        countdown_timer(random.randint(180, 355),'До следующего логина: ')
+        time.sleep(5)
+    except Exception as error:
+        print(f'Ошибка {error}')
+        time.sleep(5)
+        return main()
 
 if __name__ == "__main__":
     main()
