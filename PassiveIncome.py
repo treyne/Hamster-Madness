@@ -253,11 +253,22 @@ def ZoiPM(set_genre,current_genre,iconId,set_setting,gameName):
 
 
 
+def combos(cards):
+    command()
+    # user.combos TODO
+
 
            
         
-        
-# command({"command": {"type": "ApplyTaps", "progress": {"DEV": 400, "ART": 328, "GD": 377}, "funProgress": 101}}) #TAPS
+def taps():       
+    command()
+# command({"command": {"type": "ApplyTaps", "progress": {"DEV": 400, "ART": 328, "GD": 377}, "funProgress": 101}}) #TAPS TODO
+
+
+
+def dailyCiphers():
+# {"command":{"type":"ClaimDailyCipher","cipher":"SNIPER"}}
+# config.dailyCiphers[0].cipherEncoded
 
 
 def main():
@@ -265,7 +276,7 @@ def main():
         try:
             IP()
             #account_info()
-            set_genre = "Platformer"
+            set_genre = "VisualNovel"
             set_setting = "Sports"
             
             season2_config_version,user = sync()
