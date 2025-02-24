@@ -19,17 +19,17 @@ from headers import get_headers_opt, get_headers_post
 configurations = [
     {'app_token': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054', 'promo_id': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054','rnd1':'100','rnd2':'122','game':'Cooking Stories'}, 
     {'app_token': '8d1cc2ad-e097-4b86-90ef-7a27e19fb833', 'promo_id': 'dc128d28-c45b-411c-98ff-ac7726fbaea4','rnd1':'80','rnd2':'100','game':'Merge Away'},
-    {'app_token': 'c8e017e2-8817-4d02-bce6-b951e74bb18f', 'promo_id': 'c8e017e2-8817-4d02-bce6-b951e74bb18f','rnd1':'100','rnd2':'122','game':'Snake Run'}, 
+    {'app_token': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df', 'promo_id': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df','rnd1':'100','rnd2':'122','game':'Draw To Smash'}, 
     {'app_token': 'd02fc404-8985-4305-87d8-32bd4e66bb16', 'promo_id': 'd02fc404-8985-4305-87d8-32bd4e66bb16','rnd1':'80','rnd2':'120','game':'Factory World'},         
-    {'app_token': '4bdc17da-2601-449b-948e-f8c7bd376553', 'promo_id': '4bdc17da-2601-449b-948e-f8c7bd376553','rnd1':'80','rnd2':'100','game':'Count Masters'},         
-    #{'app_token': '4bf4966c-4d22-439b-8ff2-dc5ebca1a600', 'promo_id': '4bf4966c-4d22-439b-8ff2-dc5ebca1a600','rnd1':'80','rnd2':'100','game':'Hide Ball'},     
+    {'app_token': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff', 'promo_id': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff','rnd1':'80','rnd2':'100','game':'Merge Dale'},         
+    {'app_token': 'e53b902b-d490-406f-9770-21a27fff1d31', 'promo_id': 'e53b902b-d490-406f-9770-21a27fff1d31','rnd1':'80','rnd2':'100','game':'Doodle God'},     
     {'app_token': 'bc72d3b9-8e91-4884-9c33-f72482f0db37', 'promo_id': 'bc72d3b9-8e91-4884-9c33-f72482f0db37','rnd1':'80','rnd2':'100','game':'Bouncemasters'},         
     {'app_token': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b', 'promo_id': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b','rnd1':'80','rnd2':'100','game':'Zoopolis'},     
     {'app_token': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71', 'promo_id': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71','rnd1':'80','rnd2':'100','game':'Polysphere'},     
-    {'app_token': 'd1690a07-3780-4068-810f-9b5bbf2931b2', 'promo_id': 'b4170868-cef0-424f-8eb9-be0622e8e8e3','rnd1':'80','rnd2':'100','game':'Chain Cube 2048'},     
-    {'app_token': '82647f43-3f87-402d-88dd-09a90025313f', 'promo_id': 'c4480ac7-e178-4973-8061-9ed5b2e17954','rnd1':'125','rnd2':'140','game':'Train Miner'},   
-    {'app_token': 'eb518c4b-e448-4065-9d33-06f3039f0fcb', 'promo_id': 'eb518c4b-e448-4065-9d33-06f3039f0fcb','rnd1':'100','rnd2':'122','game':'Infected Frontier'},  
-    {'app_token': '53bf823a-948c-48c4-8bd5-9c21903416df', 'promo_id': '53bf823a-948c-48c4-8bd5-9c21903416df','rnd1':'100','rnd2':'122','game':'Tower Defense'},    
+    #{'app_token': 'd1690a07-3780-4068-810f-9b5bbf2931b2', 'promo_id': 'b4170868-cef0-424f-8eb9-be0622e8e8e3','rnd1':'80','rnd2':'100','game':'Chain Cube 2048'},     
+    #{'app_token': '82647f43-3f87-402d-88dd-09a90025313f', 'promo_id': 'c4480ac7-e178-4973-8061-9ed5b2e17954','rnd1':'125','rnd2':'140','game':'Train Miner'},   
+    #{'app_token': 'eb518c4b-e448-4065-9d33-06f3039f0fcb', 'promo_id': 'eb518c4b-e448-4065-9d33-06f3039f0fcb','rnd1':'100','rnd2':'122','game':'Infected Frontier'},  
+    #{'app_token': '53bf823a-948c-48c4-8bd5-9c21903416df', 'promo_id': '53bf823a-948c-48c4-8bd5-9c21903416df','rnd1':'100','rnd2':'122','game':'Tower Defense'},    
     
 ]
 
@@ -169,7 +169,7 @@ def gen(app_token, promo_id, delay, game):
 def get_promos():
 #-----------------------------------------------###OPTIONS###-----------------------------------------------#  
         resp = requests.options('https://api.hamsterkombatgame.io/interlude/get-promos', 
-        headers=get_headers_opt())
+        headers=get_headers_opt("POST"))
         print(f"get_promos [options] Status Code: {resp.status_code}")
         LOG(f"get_promos [options] Status Code: {resp.status_code}")
       
@@ -198,7 +198,7 @@ def apply_promo(code_data):
 #-----------------------------------------------###OPTIONS###-----------------------------------------------#  
         
         resp = requests.options('https://api.hamsterkombatgame.io/interlude/apply-promo', 
-        headers=get_headers_opt())
+        headers=get_headers_opt("POST"))
         print(f"Status Code: {resp.status_code}")
         LOG(f"Status Code: {resp.status_code}")
       
