@@ -267,6 +267,17 @@ def ZoiPM(set_genre,current_genre,iconId,set_setting,gameName):
 # # command({"command": {"type": "ApplyTaps", "progress": {"DEV": 400, "ART": 328, "GD": 377}, "funProgress": 101}}) #TAPS TODO
 
 
+# Apply PromoCode
+# {"command":{"type":"ApplyBitQuestPromoCode","promoCode":"MERGE-L66X-WZNEY-YVGP6-WGH8"}}
+
+# Task Daily
+
+
+# OneTimeTask
+# {"command":{"type":"CheckOneTimeTask","taskId":"youtube_global_s2_e19"}}
+# {"command":{"type":"CheckOneTimeTask","taskId":"subscribe_telegram_group"}}
+
+
 
 def dailyCiphers(game_cfg,user):
     encoded_str = game_cfg["config"]["dailyCiphers"][0]["cipherEncoded"] # Тут получаем кодированный шифр 
