@@ -7,7 +7,7 @@ def get_headers_opt(Method):
         "Accept-Encoding": "gzip, deflate, br, zstd",
         f"Access-Control-Request-Method": Method,
         "Access-Control-Request-Headers": "authorization,content-type",
-        "Referer": "https://hamsterkombatgame.io/",
+        "Referer": "https://season2.hamsterkombatgame.io/",
         "Connection": "keep-alive",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
@@ -21,13 +21,13 @@ def get_headers_post(bearer_token):
         "Accept": "application/json",
         "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
         "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Referer": "https://hamsterkombatgame.io/",
+        "Referer": "https://season2.hamsterkombatgame.io/",
         "Authorization": f"Bearer {bearer_token}",
         "Content-Type": "application/json",
         "Connection": "keep-alive",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",
-        "Priority": "u=1"
+        "Priority": "u=4"
     }
 
