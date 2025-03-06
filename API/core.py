@@ -258,6 +258,7 @@ def ZoiPM(set_genre,current_genre,iconId,set_setting,gameName):
     #{"command":{"type":"TryCardToDailyCombo","cardId":4}}
     # # {"command":{"type":"ClaimDailyCombo"}}
     # # {"command":{"type":"OpenLootboxes","count":1,"lootboxId":"lootbox1"}}
+    # user.combos
 
            
         
