@@ -10,14 +10,14 @@ import json
 # Загрузка переменных из .env файла
 load_dotenv()
 Bearer = os.getenv('Bearer')
-DEBUG = True
+DEBUG = False
 LOG_ON = False
 
 # Импортируем функции для получения заголовков
 from headers import get_headers_opt, get_headers_post
 
 configurations = [
-    #{'app_token': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054', 'promo_id': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054','rnd1':'60','rnd2':'100','game':'Cooking Stories'}, 
+    {'app_token': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054', 'promo_id': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054','rnd1':'60','rnd2':'100','game':'Cooking Stories'}, 
     {'app_token': '8d1cc2ad-e097-4b86-90ef-7a27e19fb833', 'promo_id': 'dc128d28-c45b-411c-98ff-ac7726fbaea4','rnd1':'60','rnd2':'100','game':'Merge Away'},
     {'app_token': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df', 'promo_id': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df','rnd1':'60','rnd2':'100','game':'Draw To Smash'}, 
     {'app_token': 'd02fc404-8985-4305-87d8-32bd4e66bb16', 'promo_id': 'd02fc404-8985-4305-87d8-32bd4e66bb16','rnd1':'60','rnd2':'100','game':'Factory World'},         
@@ -174,8 +174,8 @@ def httpx_request(url, method, data=None):
 
 
 def main():
-
-    for _ in range(4):
+    i = 0
+    while i < 4:
         for config in configurations:
             token = login_client(config['app_token'])
             countdown_timer(random.randint(80, 100), 'wait for login')
@@ -183,15 +183,12 @@ def main():
             code_data = create_code(token, config['promo_id'])
             print(f'Сгенерированный код для {config['game']}: {code_data}')
             LOG(f'Сгенерированный код для {config['game']}: {code_data}')
+            # print(f'Тест для {config['game']}: Test')
             url = "https://api.hamsterkombatgame.io/season2/command"
             httpx_request(url, "POST", data={"command":{"type":"ApplyBitQuestPromoCode","promoCode":code_data}})
-    countdown_timer(random.randint(14450,14495 ), 'До следующего пака ключей')    
-
-
-
-
-
-
+        i += 1        
+        countdown_timer(random.randint(14450,14495 ), 'До следующего пака ключей')
+        
 
 
 
