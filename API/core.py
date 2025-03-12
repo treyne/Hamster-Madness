@@ -12,7 +12,7 @@ import base64
 # Загрузка переменных из .env файла
 load_dotenv()
 Bearer = os.getenv('Bearer')
-DEBUG = True
+DEBUG = False
 
 
 
@@ -80,7 +80,7 @@ def account_info():
             try:
                 response_json = response.json()
                 debug_print('account_info JSON = ', response_json)
-                return response_json.get('accountInfo', {}).get('id')
+                return response_json
             except json.JSONDecodeError as e:
                 debug_print("JSON decode error: ", e)
                 return None
@@ -218,7 +218,7 @@ def command(cmd):
             try:
                 response_json = response.json()
                 # debug_print('command JSON = ', response_json)
-                return response_json
+                return response_json, response.status_code
             except json.JSONDecodeError as e:
                 debug_print("JSON decode error: ", e)
                 return None
@@ -246,7 +246,9 @@ def select_game(JSON,setting,genres):
 
 def ZoiPM(set_genre,current_genre,iconId,set_setting,gameName):
     if current_genre == "Clicker":
-        command({"command":{"type":"ChangeGameInDevelopment","genre":set_genre,"setting":set_setting,"name":gameName,"iconId":iconId}})
+        status = command({"command":{"type":"ChangeGameInDevelopment","genre":set_genre,"setting":set_setting,"name":gameName,"iconId":iconId}})
+        return status[1]
+    return None
 # {"command":{"type":"ChangeGameInDevelopment","genre":"Puzzle","setting":"Sports","name":"Super Tournament","iconId":"puzzle_sports"}}
 
 
@@ -302,9 +304,10 @@ def dailyCiphers(game_cfg,user):
     is_within_range = enable_at_dt <= claimed_dt <= disable_at_dt
 
     if not is_within_range:
-        command({"command":{"type":"ClaimDailyCipher","cipher":decoded_str}})  #Вводим шифр
+        status = command({"command":{"type":"ClaimDailyCipher","cipher":decoded_str}})  #Вводим шифр
+        return status[1],decoded_str
     elif is_within_range:
-        print ("Шифр введён!")
+        return "Шифр уже введён! Дальнейшие действия не требуются :3 ",decoded_str
 
 
     
