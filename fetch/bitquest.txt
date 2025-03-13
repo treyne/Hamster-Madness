@@ -1,0 +1,18 @@
+await fetch("https://api.bitquest.games/bitquest/sync", {
+    "credentials": "include",
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0",
+        "Accept": "application/json",
+        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+        "authorization": "Bearer 1741859583361064p2J2l8mMc26XVVcO7WCfUGcjmhJH9G0yEDk9h0GTNgqBXd6WDKqD8LZMfjhWC7453211",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-site",
+        "Priority": "u=4",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache"
+    },
+    "referrer": "https://app.bitquest.games/",
+    "method": "POST",
+    "mode": "cors"
+});
