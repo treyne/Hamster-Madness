@@ -40,8 +40,8 @@ def main():
            
             try:
                 if user["user"]["deferredRewards"][0]["reward"]["totalGames"] > 0:
-                    print("Ха ха! Есть чем поживиться!")
-                    logger.success(f"Игр выпущено! {user["user"]["deferredRewards"][0]["reward"]["totalGames"]}")
+                    # print("Ха ха! Есть чем поживиться!")
+                    logger.success(f"Игр выпущено! {user["user"]["deferredRewards"][0]["reward"]["totalGames"]} шт")
                     Released = core.command({"command":{"type":"ClaimReleasedGamesRewards"}}) #Собираем ништяки
                     if Released[1] == 200:
                         logger.success(f"Сбор ништяков произведён успешно!")
