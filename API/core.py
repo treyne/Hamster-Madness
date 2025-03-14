@@ -171,7 +171,7 @@ def get_promos():
     url = f"{BASE_URL}/season2/get-promos"
     perform_options_request(url, "POST")
     headers_post = get_headers_post(Bearer)  # Получаем заголовки POST запроса
-    print (headers_post)
+    
     
     headersO = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0",
