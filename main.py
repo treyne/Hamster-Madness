@@ -12,6 +12,7 @@ import random
 def main():
     while True:
         try:
+            logger.info(f"[--------->Начата новая иттерация<---------]")
             IP = core.IP()
             logger.info(f"Ваш IP: <red>{IP["ip"]}</red> | Country: <blue>{IP["country_code"]}</blue> | City: <green>{IP["city_name"]}</green>")
             AccountInfo = core.account_info()
@@ -27,7 +28,7 @@ def main():
                  logger.success(f"Файл конфигурации <green>{season2_config_version}.json</green> загружен")
             
             # Тут настройки выбора игры
-            set_genre = "VisualNovel"
+            set_genre = "Arcade"
             set_setting = "Sports"
             
 
@@ -36,17 +37,25 @@ def main():
             gameName,iconId = core.select_game(game_cfg,set_setting,set_genre) #Сгенерировали имя игры и получили iconId
             
             
+           
+            try:
+                if user["user"]["deferredRewards"][0]["reward"]["totalGames"] > 0:
+                    print("Ха ха! Есть чем поживиться!")
+                    logger.success(f"Игр выпущено! {user["user"]["deferredRewards"][0]["reward"]["totalGames"]}")
+                    Released = core.command({"command":{"type":"ClaimReleasedGamesRewards"}}) #Собираем ништяки
+                    if Released[1] == 200:
+                        logger.success(f"Сбор ништяков произведён успешно!")
+                        logger.success(f"{user["user"]["deferredRewards"][0]["reward"]["totalFunReward"][0]["type"]}: <fg #FFD700>{user["user"]["deferredRewards"][0]["reward"]["totalFunReward"][0]["amount"]}</fg #FFD700> | {user["user"]["deferredRewards"][0]["reward"]["totalFunReward"][1]["type"]}: <fg #FFD700>{user["user"]["deferredRewards"][0]["reward"]["totalFunReward"][1]["amount"]}</fg #FFD700> ")
+            except (KeyError, IndexError, TypeError):
+                logger.info(f"Собирать нечего. :)")
+
             
-            Released = core.command({"command":{"type":"ClaimReleasedGamesRewards"}}) #Собираем ништяки
-            
-            if Released[1] == 200:
-                logger.success(f"Сбор ништяков произведён успешно!") # TODO Когда нибудь я добавлю в лог подробности, но это случится не сегодня
             
             
             ZoiPM = core.ZoiPM(set_genre,current_genre,iconId,set_setting,gameName)
             if ZoiPM == 200:
-                logger.success(f"В разработку прияната игра: <blue>{gameName}</blue> | в жанре: <blue>{set_genre}</blue> | iconId: <blue>{iconId}</blue>")
-                
+                logger.success(f"В разработку прияната игра: <blue>{gameName}</blue> | в жанре: <blue>{set_genre}</blue>")
+                logger.debug(f"iconId: <blue>{iconId}</blue>")
                 
             core.get_promos()
             
@@ -56,9 +65,9 @@ def main():
                 logger.success(f"Шифр успешно введён: <green>{dailyCiphers[1]}</green> ")
             else:
                 logger.info(f"{dailyCiphers[0]}")
-            
+            print ("\n")
             core.countdown_timer(random.randint(180, 355),'До следующего логина: ')
-            time.sleep(50)
+            time.sleep(3)
         except Exception as error:
             print(f'Ошибка {error}')
             time.sleep(50)
