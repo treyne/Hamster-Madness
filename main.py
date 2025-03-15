@@ -27,6 +27,13 @@ def main():
             if game_cfg:
                  logger.success(f"Файл конфигурации <green>{season2_config_version}.json</green> загружен")
             
+            
+            StartWork = core.command({"command":{"type":"StartWork"}}) #Пинаем программистов под зад!
+            if StartWork[1] == 200:
+                logger.success(f"Стартовали работу!")            
+            
+            
+            
             # Тут настройки выбора игры
             set_genre = "Arcade"
             set_setting = "Sports"
