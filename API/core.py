@@ -4,14 +4,15 @@ import time
 import random
 import os
 import datetime
-from dotenv import load_dotenv
 import re
 from datetime import datetime
 import base64
 
+from dotenv import load_dotenv
 # Загрузка переменных из .env файла
 load_dotenv()
 Bearer = os.getenv('Bearer')
+Bearer_BitQuest = os.getenv('Bearer_BitQuest')
 DEBUG = False
 
 
@@ -210,6 +211,7 @@ def command(cmd):
     url = f"{BASE_URL}/season2/command"
     perform_options_request(url,"POST")  # Выполняем OPTIONS-запрос
     headers_post = get_headers_post(Bearer)  # Получаем заголовки для POST-запроса
+    
     try:
         with httpx.Client(http2=True, timeout=10.0) as client:
             response = client.post(url, headers=headers_post, json=cmd)
@@ -312,3 +314,64 @@ def dailyCiphers(game_cfg,user):
 
     
     return decoded_str
+
+
+
+
+
+def httpx_request(url, method, data=None):
+    """Отправляет HTTP-запрос с указанным методом и данными."""
+    headers_post = get_headers_post(Bearer)  # Получаем заголовки
+    try:
+        with httpx.Client(http2=True, timeout=10.0) as client:
+            method_func = getattr(client, method.lower(), None)
+            if method_func is None:
+                debug_print(f"Ошибка: метод {method} не поддерживается")
+                return None
+            
+            # Разные параметры для GET и остальных методов
+            kwargs = {"headers": headers_post}
+            if method.upper() == "GET":
+                kwargs["params"] = data  # GET использует params
+            else:
+                kwargs["json"] = data  # Остальные методы используют json
+            
+            response = method_func(url, **kwargs)
+            debug_print(f"Status Code: {response.status_code}")
+
+            if response.content:
+                try:
+                    response_json = response.json()
+                    debug_print("info =", response_json)
+                    return response_json
+                except json.JSONDecodeError as e:
+                    debug_print("JSON decode error:", e)
+                    return None
+    except httpx.RequestError as e:
+        debug_print(f"Ошибка сети: {e}")
+        return None
+
+
+
+
+def bitquest():
+
+    url = "https://api.bitquest.games/bitquest/sync"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36",
+        "Accept": "application/json",
+        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+        "Authorization": f"Bearer {Bearer_BitQuest}",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-site",
+        "Priority": "u=4",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache"
+    }
+
+    with httpx.Client(http2=True, follow_redirects=True) as client:
+        response = client.post(url, headers=headers)
+        # print(response.status_code)
+        # print(response.text)
+        return response.json()
