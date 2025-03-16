@@ -4,8 +4,9 @@ import random
 import uuid
 import os
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import json
+import API.core as core
 
 # Загрузка переменных из .env файла
 load_dotenv()
@@ -47,7 +48,7 @@ def LOG(*args):
                 file.write(' '.join(map(str, args)) + '\n')
         except Exception as e:
             print(f"Error writing to file: {e}")
-
+ 
 
 def countdown_timer(seconds, text):
     while seconds:
@@ -132,65 +133,34 @@ def create_code(token, promo_id):
 
 
 
-def httpx_request(url, method, data=None):
-    """Отправляет HTTP-запрос с указанным методом и данными."""
-    
-    headers_post = get_headers_post(Bearer)  # Получаем заголовки
-    
-    try:
-        with httpx.Client(http2=True, timeout=10.0) as client:
-            method_func = getattr(client, method.lower(), None)
-            if method_func is None:
-                debug_print(f"Ошибка: метод {method} не поддерживается")
-                return None
-            
-            # Разные параметры для GET и остальных методов
-            kwargs = {"headers": headers_post}
-            if method.upper() == "GET":
-                kwargs["params"] = data  # GET использует params
-            else:
-                kwargs["json"] = data  # Остальные методы используют json
-            
-            response = method_func(url, **kwargs)
-            debug_print(f"Status Code: {response.status_code}")
-
-            if response.content:
-                try:
-                    response_json = response.json()
-                    debug_print("info =", response_json)
-                    return response_json
-                except json.JSONDecodeError as e:
-                    debug_print("JSON decode error:", e)
-                    return None
-    except httpx.RequestError as e:
-        debug_print(f"Ошибка сети: {e}")
-        return None
-
-
-
-
-
-
-
-
-def main():
-    i = 0
-    while i < 4:
-        for config in configurations:
-            token = login_client(config['app_token'])
-            countdown_timer(random.randint(80, 100), 'wait for login')
-            register_event(token, config['promo_id'], (int(config['rnd1']), int(config['rnd2'])))
-            code_data = create_code(token, config['promo_id'])
-            print(f'Сгенерированный код для {config['game']}: {code_data}')
-            LOG(f'Сгенерированный код для {config['game']}: {code_data}')
-            # print(f'Тест для {config['game']}: Test')
-            url = "https://api.hamsterkombatgame.io/season2/command"
-            httpx_request(url, "POST", data={"command":{"type":"ApplyBitQuestPromoCode","promoCode":code_data}})
-        i += 1        
-        countdown_timer(random.randint(14450,14495 ), 'До следующего пака ключей')
+def genCode(app_token):
+    token = login_client(app_token)
+    countdown_timer(random.randint(80, 100), 'wait for login')
+    register_event(token, config['promo_id'], (int(config['rnd1']), int(config['rnd2'])))
+    code_data = create_code(token, config['promo_id'])
+    print(f'Сгенерированный код для {config['game']}: {code_data}')
+    return code_data
+    # print(f'Тест для {config['game']}: Test')
+    countdown_timer(30, 'До следующей иттерации')
         
 
 
+def checkTime(target_promo_id,app_token):
+    data = core.bitquest()
+    current_time = datetime.now(timezone.utc)
+    for promo in data["user"]["promos"]:
+        if promo["promoId"] == target_promo_id:
+            last_time = datetime.strptime(promo["rewardsLastTime"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+            
+            if current_time - last_time > timedelta(hours=4):
+                print("С момента последнего вознаграждения прошло больше 4 часов!")
+                Promo_code = genCode(app_token)
+                url = "https://api.hamsterkombatgame.io/season2/command"
+                resp = core.command({"command":{"type":"ApplyBitQuestPromoCode","promoCode":Promo_code}})
+                # print (resp)
+            else:
+                print("Меньше 4 часов прошло.")
+            break
 
 
 
@@ -198,6 +168,13 @@ def main():
 
 
 
-if __name__ == "__main__":
-    main()
-
+i = 0
+while i < 4:
+    for config in configurations:
+        checkTime(config['promo_id'],config['app_token'])
+        countdown_timer(5, 'Задержка кода')
+i += 1        
+countdown_timer(random.randint(14450,14495 ), 'До следующего пака ключей')
+    
+    
+    
