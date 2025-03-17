@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 import json
 import API.core as core
+from API.logger import logger
+
 
 # Загрузка переменных из .env файла
 load_dotenv()
@@ -77,8 +79,7 @@ def login_client(app_token):
             }, headers={'Content-Type': 'application/json; charset=utf-8'})
             response.raise_for_status()
             data = response.json()
-            print('login-client [clientToken] = ', data['clientToken'])
-            LOG('login-client [clientToken] = ', data['clientToken'])
+            logger.success(f"login-client [clientToken] =  {data['clientToken']}")
             return data['clientToken']
     except httpx.RequestError as error:
         print(f'Ошибка при входе клиента: {error}')
@@ -127,7 +128,6 @@ def create_code(token, promo_id):
                 return data['promoCode']
         except httpx.RequestError as error:
             print(f'Ошибка при создании кода: {error}')
-            LOG(f'Ошибка при создании кода: {error}')
             countdown_timer(120, 'Задержка после ошибки создания кода')
 
 
@@ -138,28 +138,65 @@ def genCode(app_token):
     countdown_timer(random.randint(80, 100), 'wait for login')
     register_event(token, config['promo_id'], (int(config['rnd1']), int(config['rnd2'])))
     code_data = create_code(token, config['promo_id'])
-    print(f'Сгенерированный код для {config['game']}: {code_data}')
+    logger.success(f"Сгенерированный код для {config['game']}: {code_data}")
     return code_data
-    # print(f'Тест для {config['game']}: Test')
-    countdown_timer(30, 'До следующей иттерации')
+
         
 
 
-def checkTime(target_promo_id,app_token):
-    data = core.bitquest()
+def TmZ(data):
+    # Получаем текущую дату и время с UTC
+    current_time = datetime.now(timezone.utc)
+
+    # Находим самую раннюю дату rewardsLastTime
+    earliest_reward_time = min(
+        [datetime.strptime(promo["rewardsLastTime"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc) 
+         for promo in data["user"]["promos"]]
+    )
+
+    # Рассчитываем разницу во времени с текущей датой
+    time_diff = current_time - earliest_reward_time
+
+    # Если разница меньше 4 часов, считаем сколько нужно подождать до 4 часов и 15 минут
+    if time_diff < timedelta(hours=4):
+        wait_time = timedelta(hours=4, minutes=15) - time_diff
+        wait_seconds = wait_time.total_seconds()
+        print(f"Нужно подождать: {wait_seconds} секунд.")
+    else:
+        print("Разница больше 4 часов = ", earliest_reward_time)
+
+
+
+
+
+def checkTime(app_token,game):
+    data,status = core.bitquest()
+    if status == 200:
+        try:
+            logger.success(f"Данные BitQuest успешно получены!  | Ваш ID: {data['user']['id']}")
+        except (KeyError, IndexError, TypeError) as e:
+            logger.error(f"Данные BitQuest отсутствуют!  | Ошибка: {e}")
+        
     current_time = datetime.now(timezone.utc)
     for promo in data["user"]["promos"]:
-        if promo["promoId"] == target_promo_id:
+        if promo["promoId"] == app_token and promo["rewardsToday"] < 4:
             last_time = datetime.strptime(promo["rewardsLastTime"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
-            
             if current_time - last_time > timedelta(hours=4):
-                print("С момента последнего вознаграждения прошло больше 4 часов!")
+                logger.info(f"КД для игры {game} прошло, ключей сегодня = {promo["rewardsToday"]}")
+                logger.info(f"Начинаю генерацию нового ключа...")
                 Promo_code = genCode(app_token)
                 url = "https://api.hamsterkombatgame.io/season2/command"
-                resp = core.command({"command":{"type":"ApplyBitQuestPromoCode","promoCode":Promo_code}})
+                countdown_timer(random.randint(10,30), 'Задержка перед вводом кода')
+                resp,status = core.command({"command":{"type":"ApplyBitQuestPromoCode","promoCode":Promo_code}})
+                if status == 200:
+                    try:
+                        logger.success(f"Промокод {Promo_code} успешно введён! ")
+                    except (KeyError, IndexError, TypeError) as e:
+                        logger.error(f"Ошибка ввода промокода!  | err: {e}")
+                
                 # print (resp)
             else:
-                print("Меньше 4 часов прошло.")
+                logger.info(f"Слишком рано для игры {game}, прошло меньше 4 часов!")
             break
 
 
@@ -171,10 +208,14 @@ def checkTime(target_promo_id,app_token):
 i = 0
 while i < 4:
     for config in configurations:
-        checkTime(config['promo_id'],config['app_token'])
+        # print(config['game'])
+        checkTime(config['app_token'],config['game'])
         countdown_timer(5, 'Задержка кода')
-i += 1        
-countdown_timer(random.randint(14450,14495 ), 'До следующего пака ключей')
+    i += 1        
+    countdown_timer(random.randint(14450,14495), 'До следующего пака ключей')
+        
     
+# data,status = core.bitquest()
+# TmZ(data)    
     
-    
+
