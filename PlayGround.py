@@ -161,9 +161,12 @@ def TmZ(data):
     if time_diff < timedelta(hours=4):
         wait_time = timedelta(hours=4, minutes=15) - time_diff
         wait_seconds = wait_time.total_seconds()
-        print(f"Нужно подождать: {wait_seconds} секунд.")
+        wait_seconds = int(round(wait_seconds))
+        # print(f"Нужно подождать: {wait_seconds} секунд.")
+        return wait_seconds 
     else:
         print("Разница больше 4 часов = ", earliest_reward_time)
+        return "10"
 
 
 
@@ -182,7 +185,7 @@ def checkTime(app_token,game):
         if promo["promoId"] == app_token and promo["rewardsToday"] < 4:
             last_time = datetime.strptime(promo["rewardsLastTime"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
             if current_time - last_time > timedelta(hours=4):
-                logger.info(f"КД для игры {game} прошло, ключей сегодня = {promo["rewardsToday"]}")
+                logger.info(f"КД для игры <fg #D8659E>{game}</fg #D8659E> прошло, ключей сегодня = {promo["rewardsToday"]}")
                 logger.info(f"Начинаю генерацию нового ключа...")
                 Promo_code = genCode(app_token)
                 url = "https://api.hamsterkombatgame.io/season2/command"
@@ -190,13 +193,13 @@ def checkTime(app_token,game):
                 resp,status = core.command({"command":{"type":"ApplyBitQuestPromoCode","promoCode":Promo_code}})
                 if status == 200:
                     try:
-                        logger.success(f"Промокод {Promo_code} успешно введён! ")
+                        logger.success(f"Промокод  <fg #00FFFF>{Promo_code}</fg #00FFFF> успешно введён! ")
                     except (KeyError, IndexError, TypeError) as e:
                         logger.error(f"Ошибка ввода промокода!  | err: {e}")
                 
                 # print (resp)
             else:
-                logger.info(f"Слишком рано для игры {game}, прошло меньше 4 часов!")
+                logger.info(f"Слишком рано для генерировать промокод для игры <fg #D8659E>{game}</fg #D8659E>")
             break
 
 
@@ -211,11 +214,10 @@ while i < 4:
         # print(config['game'])
         checkTime(config['app_token'],config['game'])
         countdown_timer(5, 'Задержка кода')
-    i += 1        
-    countdown_timer(random.randint(14450,14495), 'До следующего пака ключей')
+    i += 1
+    data,status = core.bitquest()    
+    countdown_timer(TmZ(data), 'До следующего пака ключей')
         
-    
-# data,status = core.bitquest()
-# TmZ(data)    
+  
     
 
