@@ -374,4 +374,4 @@ def bitquest():
         response = client.post(url, headers=headers)
         # print(response.status_code)
         # print(response.text)
-        return response.json()
+        return response.json(), response.status_code
