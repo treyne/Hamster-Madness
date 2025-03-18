@@ -20,15 +20,15 @@ LOG_ON = False
 from headers import get_headers_opt, get_headers_post
 
 configurations = [
-    {'app_token': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054', 'promo_id': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054','rnd1':'60','rnd2':'100','game':'Cooking Stories'}, 
-    {'app_token': '8d1cc2ad-e097-4b86-90ef-7a27e19fb833', 'promo_id': 'dc128d28-c45b-411c-98ff-ac7726fbaea4','rnd1':'60','rnd2':'100','game':'Merge Away'},
-    {'app_token': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df', 'promo_id': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df','rnd1':'60','rnd2':'100','game':'Draw To Smash'}, 
-    {'app_token': 'd02fc404-8985-4305-87d8-32bd4e66bb16', 'promo_id': 'd02fc404-8985-4305-87d8-32bd4e66bb16','rnd1':'60','rnd2':'100','game':'Factory World'},         
-    {'app_token': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff', 'promo_id': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff','rnd1':'60','rnd2':'100','game':'Merge Dale'},         
-    {'app_token': 'e53b902b-d490-406f-9770-21a27fff1d31', 'promo_id': 'e53b902b-d490-406f-9770-21a27fff1d31','rnd1':'60','rnd2':'100','game':'Doodle God'},     
-    {'app_token': 'bc72d3b9-8e91-4884-9c33-f72482f0db37', 'promo_id': 'bc72d3b9-8e91-4884-9c33-f72482f0db37','rnd1':'60','rnd2':'100','game':'Bouncemasters'},         
-    {'app_token': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b', 'promo_id': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b','rnd1':'60','rnd2':'100','game':'Zoopolis'},     
-    {'app_token': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71', 'promo_id': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71','rnd1':'60','rnd2':'100','game':'Polysphere'},     
+    {'app_token': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054', 'promo_id': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054','rnd1':'40','rnd2':'60','game':'Cooking Stories'}, 
+    {'app_token': '8d1cc2ad-e097-4b86-90ef-7a27e19fb833', 'promo_id': 'dc128d28-c45b-411c-98ff-ac7726fbaea4','rnd1':'40','rnd2':'60','game':'Merge Away'},
+    {'app_token': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df', 'promo_id': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df','rnd1':'40','rnd2':'60','game':'Draw To Smash'}, 
+    {'app_token': 'd02fc404-8985-4305-87d8-32bd4e66bb16', 'promo_id': 'd02fc404-8985-4305-87d8-32bd4e66bb16','rnd1':'40','rnd2':'60','game':'Factory World'},         
+    {'app_token': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff', 'promo_id': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff','rnd1':'40','rnd2':'60','game':'Merge Dale'},         
+    {'app_token': 'e53b902b-d490-406f-9770-21a27fff1d31', 'promo_id': 'e53b902b-d490-406f-9770-21a27fff1d31','rnd1':'40','rnd2':'60','game':'Doodle God'},     
+    {'app_token': 'bc72d3b9-8e91-4884-9c33-f72482f0db37', 'promo_id': 'bc72d3b9-8e91-4884-9c33-f72482f0db37','rnd1':'40','rnd2':'60','game':'Bouncemasters'},         
+    {'app_token': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b', 'promo_id': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b','rnd1':'40','rnd2':'60','game':'Zoopolis'},     
+    {'app_token': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71', 'promo_id': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71','rnd1':'40','rnd2':'60','game':'Polysphere'},     
     #{'app_token': 'd1690a07-3780-4068-810f-9b5bbf2931b2', 'promo_id': 'b4170868-cef0-424f-8eb9-be0622e8e8e3','rnd1':'20','rnd2':'30','game':'Chain Cube 2048'},     
     #{'app_token': '82647f43-3f87-402d-88dd-09a90025313f', 'promo_id': 'c4480ac7-e178-4973-8061-9ed5b2e17954','rnd1':'125','rnd2':'140','game':'Train Miner'},   
     #{'app_token': 'eb518c4b-e448-4065-9d33-06f3039f0fcb', 'promo_id': 'eb518c4b-e448-4065-9d33-06f3039f0fcb','rnd1':'100','rnd2':'122','game':'Infected Frontier'},  
@@ -179,13 +179,24 @@ def checkTime(app_token,game):
             logger.success(f"Данные BitQuest успешно получены!  | Ваш ID: {data['user']['id']}")
         except (KeyError, IndexError, TypeError) as e:
             logger.error(f"Данные BitQuest отсутствуют!  | Ошибка: {e}")
+            return False
         
     current_time = datetime.now(timezone.utc)
     for promo in data["user"]["promos"]:
-        if promo["promoId"] == app_token and promo["rewardsToday"] < 4:
+        rewardsToday = promo["rewardsToday"]
+        
+        last_time = datetime.strptime(promo["rewardsLastTime"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+        # Получаем дату вчерашнего дня
+        yesterday = (current_time - timedelta(days=1)).date()
+
+        # Проверяем, что last_time был вчера (в пределах того дня)
+        if last_time.date() == yesterday:
+            rewardsToday = 0
+        
+        if promo["promoId"] == app_token and rewardsToday < 4:
             last_time = datetime.strptime(promo["rewardsLastTime"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
             if current_time - last_time > timedelta(hours=4):
-                logger.info(f"КД для игры <fg #D8659E>{game}</fg #D8659E> прошло, ключей сегодня = {promo["rewardsToday"]}")
+                logger.info(f"КД для игры <fg #D8659E>{game}</fg #D8659E> прошло, ключей сегодня = {rewardsToday}")
                 logger.info(f"Начинаю генерацию нового ключа...")
                 Promo_code = genCode(app_token)
                 url = "https://api.hamsterkombatgame.io/season2/command"
@@ -196,10 +207,11 @@ def checkTime(app_token,game):
                         logger.success(f"Промокод  <fg #00FFFF>{Promo_code}</fg #00FFFF> успешно введён! ")
                     except (KeyError, IndexError, TypeError) as e:
                         logger.error(f"Ошибка ввода промокода!  | err: {e}")
+                        return False
                 
                 # print (resp)
             else:
-                logger.info(f"Слишком рано для генерировать промокод для игры <fg #D8659E>{game}</fg #D8659E>")
+                logger.info(f"Слишком рано для игры <fg #D8659E>{game}</fg #D8659E> ключей сегодня <fg #FFD700>{rewardsToday}</fg #FFD700>")
             break
 
 
@@ -208,13 +220,12 @@ def checkTime(app_token,game):
 
 
 
-i = 0
-while i < 4:
+PlayGround = True
+while PlayGround:
     for config in configurations:
         # print(config['game'])
         checkTime(config['app_token'],config['game'])
         countdown_timer(5, 'Задержка кода')
-    i += 1
     data,status = core.bitquest()    
     countdown_timer(TmZ(data), 'До следующего пака ключей')
         
