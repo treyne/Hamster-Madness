@@ -174,26 +174,8 @@ def get_promos():
     url = f"{BASE_URL}/season2/get-promos"
     perform_options_request(url, "POST")
     headers_post = get_headers_post(Bearer)  # Получаем заголовки POST запроса
-    
-    
-    headersO = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0",
-        "Accept": "application/json",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Authorization": "Bearer 1740550840408DqFBr7ekpd6N9l3gCyIcC02l6WR5jHcxj0wQfCx0anSa647ku1HMIrRUqmZsAfpJ7453211883",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
-        "Priority": "u=4",
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache"
-    }      
-
-    
-    
-    
     with httpx.Client(http2=True, timeout=10.0) as client:
-        response = client.post(url, headers=headersO,)
+        response = client.post(url, headers=headers_post,)
 
     debug_print(f"Status Code: {response.status_code}")
     if response.content:
