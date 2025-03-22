@@ -7,6 +7,8 @@ import datetime
 import re
 from datetime import datetime
 import base64
+from bs4 import BeautifulSoup
+
 
 from dotenv import load_dotenv
 # Загрузка переменных из .env файла
@@ -319,11 +321,11 @@ def dailyCiphers(game_cfg,user):
 
 
 
-def httpx_request(url, method, data=None):
+def httpx_request(url, method, data=None,http2activ=True):
     """Отправляет HTTP-запрос с указанным методом и данными."""
     headers_post = get_headers_post(Bearer)  # Получаем заголовки
     try:
-        with httpx.Client(http2=True, timeout=10.0) as client:
+        with httpx.Client(http2=http2activ, timeout=10.0) as client:
             method_func = getattr(client, method.lower(), None)
             if method_func is None:
                 debug_print(f"Ошибка: метод {method} не поддерживается")
@@ -375,3 +377,79 @@ def bitquest():
         # print(response.status_code)
         # print(response.text)
         return response.json(), response.status_code
+
+
+
+
+
+
+
+def GetCombo():
+    url = "https://gorodfactov.ru/hamster-gamedev-heroes-kombo/"
+    try:
+        response = httpx.get(url)
+        response.raise_for_status()  # Проверяем, что запрос успешен (HTTP 200)
+        # print(response.text)  # Выводим содержимое ответа
+    except httpx.HTTPStatusError as e:
+        print(f"Ошибка HTTP: {e}")
+    except httpx.RequestError as e:
+        print(f"Ошибка запроса: {e}")
+        
+
+    html = response.text
+    # html = '''<div class="dropshadowboxes-drop-shadow dropshadowboxes-lifted-both dropshadowboxes-rounded-corners dropshadowboxes-inside-and-outside-shadow" style="background-color:#FFFFFF;border-style:solid;border-width:2px;border-color:#DDDDDD;width:;padding:10px"><div><p><strong>Разработка — «Игровые кресла»<br>Разработка — «Индустриальный шпионаж»<br>Разработка — «Поехать на конференцию»</strong></p></div></div>'''
+
+    soup = BeautifulSoup(html, 'html.parser')
+
+    div_content = soup.find('div', class_='dropshadowboxes-drop-shadow')
+
+    if div_content:
+        text = div_content.get_text(strip=True, separator=' ')
+        words_in_quotes = re.findall(r'«(.*?)»', text)
+        print(words_in_quotes)
+        
+    cards = [
+    {'id': '1', 'nameRussian': 'Игровые кресла'},
+    {'id': '3', 'nameRussian': 'AI арт'},
+    {'id': '5', 'nameRussian': 'Быстрый вай-фай'}, 
+    {'id': '7', 'nameRussian': 'Игровая консоль'}, 
+    {'id': '9', 'nameRussian': 'Трекинг времени'}, 
+    {'id': '11', 'nameRussian': 'Пригласить ментора'}, 
+    {'id': '13', 'nameRussian': 'Маскот студии'}, 
+    {'id': '15', 'nameRussian': 'Локальные митапы'}, 
+    {'id': '17', 'nameRussian': 'Индустриальный шпионаж'}, 
+    {'id': '19', 'nameRussian': 'Уикенд геймджема'},  
+    {'id': '21', 'nameRussian': 'Произнести речь'}, 
+    {'id': '22', 'nameRussian': 'Поехать на конференцию'}, 
+    {'id': '23', 'nameRussian': 'Разработать движок'}, 
+    {'id': '24', 'nameRussian': 'Офисное спа'}, 
+    {'id': '25', 'nameRussian': 'Быстрое прототипирование'}, 
+    {'id': '26', 'nameRussian': 'Печеньки'}, 
+    {'id': '27', 'nameRussian': 'R&D'}, 
+    {'id': '28', 'nameRussian': 'Цифровой апельсин'}, 
+    {'id': '29', 'nameRussian': 'Офисный шеф-повар'}, 
+    {'id': '30', 'nameRussian': 'Быстрый рекрутинг'}, 
+    {'id': '2', 'nameRussian': 'Реклама в своих играх'}, 
+    {'id': '4', 'nameRussian': 'Начать стриминг'}, 
+    {'id': '6', 'nameRussian': 'Лайки необходимы'}, 
+    {'id': '8', 'nameRussian': 'Студийный подкаст'}, 
+    {'id': '10', 'nameRussian': 'Реклама на билбордах'}, 
+    {'id': '12', 'nameRussian': 'Распустить слухи'}, 
+    {'id': '14', 'nameRussian': 'Открыть дискорд сервер'}, 
+    {'id': '16', 'nameRussian': 'Утечка "прототипа"'}, 
+    {'id': '18', 'nameRussian': 'Свой собственный магазин'}, 
+    {'id': '20', 'nameRussian': 'Камео'},
+    ]
+ 
+    found_cards = {card['nameRussian']: card['id'] for card in cards if card['nameRussian'] in words_in_quotes}
+    
+    for name, card_id in found_cards.items():
+        
+        command({"command":{"type":"TryCardToDailyCombo","cardId":card_id}})
+        logger.success(f"Карта : <blue>{name}</blue> была добавлена в комбо!)
+        
+        countdown_timer(7,'До следующей карты ')
+        
+        # print(f"{name}: {card_id}")
+
+        
