@@ -27,12 +27,22 @@ def main():
             if game_cfg:
                  logger.success(f"Файл конфигурации <green>{season2_config_version}.json</green> загружен")
             
+            if user["user"]["counters"]["dailyRewardCounter"]["count"] == 1:
+                ClaimDailyRewards = core.command({"command":{"type":"ClaimDailyRewards"}})
+                if ClaimDailyRewards[1] == 200:  
+                    logger.success(f"Получили ежедневную награду!")
+                else:
+                    logger.error(f"Не смогли получить ежндневную награду! Код ответа сервера: {ClaimDailyRewards[1]}")
+                    logger.error(f"ответа сервера: {ClaimDailyRewards[0]}")
+            else:
+                logger.info(f"Ежедневная награда уже получена! | dailyRewardCounter.count = {user["user"]["counters"]["dailyRewardCounter"]["count"]} ")
             
             StartWork = core.command({"command":{"type":"StartWork"}}) #Пинаем программистов под зад!
             if StartWork[1] == 200:
-                logger.success(f"Стартовали работу!")            
-            
-            
+                logger.success(f"Стартовали работу!")   
+            else:        
+                logger.error(f"Не смогли стартовать работу! Код ответа сервера: {StartWork[1]}")
+                logger.error(f"ответа сервера: {StartWork[0]}")
             
             # Тут настройки выбора игры
             set_genre = "Arcade"
