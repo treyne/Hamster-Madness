@@ -399,7 +399,7 @@ def GetCombo():
         
 
     html = response.text
-
+    
     soup = BeautifulSoup(html, 'html.parser')
 
     div_content = soup.find('div', class_='dropshadowboxes-drop-shadow')
@@ -459,5 +459,6 @@ def GetCombo():
             logger.error(f"Карта : <blue>{name}</blue> не добавлена в комбо! Что то пошло не так:{e} ")
             countdown_timer(20,'Ошибка!')
             break
-       
+    command({"command":{"type":"ClaimDailyCombo"}})
+    return None
     
