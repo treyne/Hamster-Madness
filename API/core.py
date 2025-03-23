@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 Bearer = os.getenv('Bearer')
 Bearer_BitQuest = os.getenv('Bearer_BitQuest')
-DEBUG = True
+DEBUG = False
 
 
 
@@ -214,7 +214,6 @@ def command(cmd):
     url = f"{BASE_URL}/season2/command"
     perform_options_request(url,"POST")  # Выполняем OPTIONS-запрос
     headers_post = get_headers_post(Bearer)  # Получаем заголовки для POST-запроса
-    print (headers_post)
     try:
         with httpx.Client(http2=True, timeout=10.0) as client:
             response = client.post(url, headers=headers_post, json=cmd)
