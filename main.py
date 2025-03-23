@@ -27,7 +27,27 @@ def main():
             if game_cfg:
                  logger.success(f"Файл конфигурации <green>{season2_config_version}.json</green> загружен")
             
-            
+
+            #################################Тут работа с ежедневной наградой###########################################################
+            updated_at_str = user["user"]["counters"]["dailyRewardCounter"]["updatedAt"] # Получаем строку с датой
+            updated_at = datetime.strptime(updated_at_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=UTC) # Преобразуем её в объект datetime (указываем, что это UTC-время) 
+            yesterday = (datetime.now(UTC) - timedelta(days=1)).date() # Определяем вчерашнюю дату в UTC
+
+            # Проверяем, относится ли дата к вчерашнему дню
+            if updated_at.date() == yesterday:
+                logger.info(f"Стартуем получение ежедневной награды! ")
+                ClaimDailyRewards = core.command({"command":{"type":"ClaimDailyRewards"}})
+                if ClaimDailyRewards[1] == 200:  
+                    logger.success(f"Получили ежедневную награду!")
+                else:
+                    logger.error(f"Не смогли получить ежндневную награду! Код ответа сервера: {ClaimDailyRewards[1]}")
+                    logger.error(f"ответа сервера: {ClaimDailyRewards[0]}")
+            else:
+                logger.info(f"Ежедневная награда уже получена! | dailyRewardCounter.count = {user["user"]["counters"]["dailyRewardCounter"]["count"]} ")
+            #################################Закончили работу с ежедневной наградой###########################################################
+
+
+		
             StartWork = core.command({"command":{"type":"StartWork"}}) #Пинаем программистов под зад!
             if StartWork[1] == 200:
                 logger.success(f"Стартовали работу!")            
