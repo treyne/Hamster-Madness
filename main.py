@@ -35,25 +35,30 @@ def main():
             
             
             # Тут настройки выбора игры
-            set_genre = "Arcade"
+            set_genre = "Tycoon"
             set_setting = "Sports"
             
 
             current_genre = user['user']['game']['genre']
             logger.info(f"Текущий жанр <green>{current_genre}</green> ")
             gameName,iconId = core.select_game(game_cfg,set_setting,set_genre) #Сгенерировали имя игры и получили iconId
-            
-            
-           
+      
             try:
-                if user['user']['deferredRewards'][0]['reward']['totalGames'] > 0:
+                print (user.get("user", {}).get("deferredRewards", []))
+                for reward_data in user.get("user", {}).get("deferredRewards", []):
+                    reward = reward_data.get("reward", {})
+                    if reward.get("type") == "DeferredRewardGamesRelease":
+                        totalGames = reward.get('totalGames')
+                if totalGames > 0:
                     # print("Ха ха! Есть чем поживиться!")
-                    logger.success(f"Игр выпущено! {user['user']['deferredRewards'][0]['reward']['totalGames']} шт")
+                    logger.success(f"Игр выпущено! {totalGames} шт")
                     Released = core.command({"command":{"type":"ClaimReleasedGamesRewards"}}) #Собираем ништяки
                     if Released[1] == 200:
                         logger.success(f"Сбор ништяков произведён успешно!")
-                        logger.success(f"{user['user']['deferredRewards'][0]['reward']['totalFunReward'][0]['type']}: <fg #FFD700>{user['user']['deferredRewards'][0]['reward']['totalFunReward'][0]['amount']}</fg #FFD700> | {user['user']['deferredRewards'][0]['reward']['totalFunReward'][1]['type']}: <fg #FFD700>{user['user']['deferredRewards'][0]['reward']['totalFunReward'][1]['amount']}</fg #FFD700> ")
-            except (KeyError, IndexError, TypeError):
+                        # logger.success(f"{user['user']['deferredRewards'][0]['reward']['totalFunReward'][0]['type']}: <fg #FFD700>{user['user']['deferredRewards'][0]['reward']['totalFunReward'][0]['amount']}</fg #FFD700> | {user['user']['deferredRewards'][0]['reward']['totalFunReward'][1]['type']}: <fg #FFD700>{user['user']['deferredRewards'][0]['reward']['totalFunReward'][1]['amount']}</fg #FFD700> ")
+                else:
+                    logger.info(f"Собирать нечего. :)")
+            except Exception as Err:
                 logger.info(f"Собирать нечего. :)")
 
             
@@ -73,7 +78,7 @@ def main():
             else:
                 logger.info(f"{dailyCiphers[0]}")
             print ("\n")
-            core.countdown_timer(random.randint(180, 355),'До следующего логина: ')
+            core.countdown_timer(random.randint(197, 200),'До следующего логина: ')
             time.sleep(3)
         except Exception as error:
             print(f'Ошибка {error}')
