@@ -1,4 +1,0 @@
-
-python cipher.py
-
-pause
