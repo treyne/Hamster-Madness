@@ -44,7 +44,6 @@ def main():
             gameName,iconId = core.select_game(game_cfg,set_setting,set_genre) #Сгенерировали имя игры и получили iconId
       
             try:
-                print (user.get("user", {}).get("deferredRewards", []))
                 for reward_data in user.get("user", {}).get("deferredRewards", []):
                     reward = reward_data.get("reward", {})
                     if reward.get("type") == "DeferredRewardGamesRelease":
