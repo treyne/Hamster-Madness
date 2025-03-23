@@ -10,12 +10,13 @@ import base64
 from bs4 import BeautifulSoup
 
 
+
 from dotenv import load_dotenv
 # Загрузка переменных из .env файла
 load_dotenv()
 Bearer = os.getenv('Bearer')
 Bearer_BitQuest = os.getenv('Bearer_BitQuest')
-DEBUG = False
+DEBUG = True
 
 
 
@@ -174,8 +175,26 @@ def get_promos():
     url = f"{BASE_URL}/season2/get-promos"
     perform_options_request(url, "POST")
     headers_post = get_headers_post(Bearer)  # Получаем заголовки POST запроса
+    
+    
+    headersO = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0",
+        "Accept": "application/json",
+        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+        "Authorization": "Bearer 1740550840408DqFBr7ekpd6N9l3gCyIcC02l6WR5jHcxj0wQfCx0anSa647ku1HMIrRUqmZsAfpJ7453211883",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-site",
+        "Priority": "u=4",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache"
+    }      
+
+    
+    
+    
     with httpx.Client(http2=True, timeout=10.0) as client:
-        response = client.post(url, headers=headers_post,)
+        response = client.post(url, headers=headersO,)
 
     debug_print(f"Status Code: {response.status_code}")
     if response.content:
@@ -195,7 +214,7 @@ def command(cmd):
     url = f"{BASE_URL}/season2/command"
     perform_options_request(url,"POST")  # Выполняем OPTIONS-запрос
     headers_post = get_headers_post(Bearer)  # Получаем заголовки для POST-запроса
-    
+    print (headers_post)
     try:
         with httpx.Client(http2=True, timeout=10.0) as client:
             response = client.post(url, headers=headers_post, json=cmd)
@@ -207,10 +226,10 @@ def command(cmd):
                 return response_json, response.status_code
             except json.JSONDecodeError as e:
                 debug_print("JSON decode error: ", e)
-                return None
+                return response.status_code
     except httpx.RequestError as e:
         debug_print(f"Ошибка сети: {e}")
-        return None
+        return 777
     return None                
 
 
@@ -367,6 +386,7 @@ def bitquest():
 
 
 def GetCombo():
+    from API.logger import logger
     url = "https://gorodfactov.ru/hamster-gamedev-heroes-kombo/"
     try:
         response = httpx.get(url)
@@ -388,7 +408,7 @@ def GetCombo():
     if div_content:
         text = div_content.get_text(strip=True, separator=' ')
         words_in_quotes = re.findall(r'«(.*?)»', text)
-        print(words_in_quotes)
+        # print(words_in_quotes)
         
     cards = [
     {'id': '1', 'nameRussian': 'Игровые кресла'},
@@ -424,14 +444,21 @@ def GetCombo():
     ]
  
     found_cards = {card['nameRussian']: card['id'] for card in cards if card['nameRussian'] in words_in_quotes}
-    
+ 
     for name, card_id in found_cards.items():
-        
-        command({"command":{"type":"TryCardToDailyCombo","cardId":card_id}})
-        logger.success(f"Карта : <blue>{name}</blue> была добавлена в комбо!)
-        
-        countdown_timer(7,'До следующей карты ')
-        
-        # print(f"{name}: {card_id}")
-
-        
+        TryCardToDailyCombo = command({'command': {'type': 'TryCardToDailyCombo', 'cardId':int(card_id)}})
+        try:
+            if TryCardToDailyCombo[1] == 200:
+                logger.success(f"Карта : <blue>{name}</blue> была добавлена в комбо! id карты: {card_id}")
+                countdown_timer(7,'До следующей карты ')
+            else:     
+                logger.error(f"Карта : <blue>{name}</blue> не добавлена в комбо! :( ")
+                logger.error(f"ответ сервера : {TryCardToDailyCombo}")
+                countdown_timer(10,'Думаем что делать дальше... ')
+            
+        except Exception as e:
+            logger.error(f"Карта : <blue>{name}</blue> не добавлена в комбо! Что то пошло не так:{e} ")
+            countdown_timer(20,'Ошибка!')
+            break
+       
+    
