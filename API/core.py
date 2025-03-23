@@ -399,7 +399,6 @@ def GetCombo():
         
 
     html = response.text
-    # html = '''<div class="dropshadowboxes-drop-shadow dropshadowboxes-lifted-both dropshadowboxes-rounded-corners dropshadowboxes-inside-and-outside-shadow" style="background-color:#FFFFFF;border-style:solid;border-width:2px;border-color:#DDDDDD;width:;padding:10px"><div><p><strong>Разработка — «Игровые кресла»<br>Разработка — «Индустриальный шпионаж»<br>Разработка — «Поехать на конференцию»</strong></p></div></div>'''
 
     soup = BeautifulSoup(html, 'html.parser')
 
