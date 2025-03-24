@@ -383,7 +383,6 @@ def bitquest():
 
 
 
-
 def GetCombo():
     from API.logger import logger
     url = "https://gorodfactov.ru/hamster-gamedev-heroes-kombo/"
@@ -403,10 +402,17 @@ def GetCombo():
 
     div_content = soup.find('div', class_='dropshadowboxes-drop-shadow')
 
-    if div_content:
+    try:
         text = div_content.get_text(strip=True, separator=' ')
-        words_in_quotes = re.findall(r'«(.*?)»', text)
-        # print(words_in_quotes)
+        words_in_quotes = re.findall(r"Разработка —\s*[«\"]?(.*?)[»\"]?(?=\s*Разработка —|$)", text)
+        # print(matches)
+        # result = [" ".join(matches)]
+        # print(result)
+
+
+
+    except Exception as e:
+        print(f"Произошла какая то ебота:{e}")
         
     cards = [
     {'id': '1', 'nameRussian': 'Игровые кресла'},
@@ -460,4 +466,5 @@ def GetCombo():
             break
     command({"command":{"type":"ClaimDailyCombo"}})
     return None
+    
     
