@@ -22,7 +22,7 @@ def main():
             logger.info(f"gamepads: <blue>{user['user']['profile']['gamepads']}</blue> | gamepads Toltal: <blue>{user['user']['profile']['gamepads_total']}</blue> | reputation: <blue>{user['user']['profile']['reputation']}</blue>")
             logger.info(f"soft money total: <fg #FFD700>{user['user']['profile']['soft_money_total']}</fg #FFD700> | soft money: <fg #FFD700>{user['user']['profile']['soft_money']}</fg #FFD700>")
             logger.info(f"hard money total: <fg #FFD700>{user['user']['profile']['hard_money_total']}</fg #FFD700> | hard money: <fg #FFD700>{user['user']['profile']['hard_money']}</fg #FFD700>")
-            logger.info(f"Total Profit: <yellow>{user['user']['statistics']['totalProfit']}</yellow> | totalFun: <yellow>{user['user']['statistics']['totalFun']}</yellow>| totalGames: <yellow>{user['user']['statistics']['totalGames']}</yellow>")
+            logger.info(f"Total Profit: <fg #FFD700>{user['user']['statistics']['totalProfit']}</fg #FFD700> | totalFun: <fg #FFD700>{user['user']['statistics']['totalFun']}</fg #FFD700>| totalGames: <fg #FFD700>{user['user']['statistics']['totalGames']}</fg #FFD700>")
             game_cfg = core.game_config(season2_config_version)
             if game_cfg:
                  logger.success(f"Файл конфигурации <green>{season2_config_version}.json</green> загружен")
