@@ -44,7 +44,7 @@
 ~/Hamster-Madness >>> copy .env-example .env
 ~/Hamster-Madness >>> # Откройте файл .env и укажите ваши API_ID и API_HASH
 ~/Hamster-Madness >>> python main.py
-```
+
     
 
 
