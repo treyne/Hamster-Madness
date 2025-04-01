@@ -42,7 +42,7 @@
 </details>
 
 <details>
-  <summary>Нажмите Ctrl+Shift+E (инструменты разработчика -> сеть)</summary>
+  <summary>Нажмите <b>Ctrl+Shift+E</b> (инструменты разработчика -> сеть)</summary>
   <img src=".github/images/0.PNG" alt="set2">
 </details>
 
@@ -52,7 +52,12 @@
   <img src=".github/images/1.PNG" alt="set3">
 </details>
 
-Находим файл auth-by-telegram-webapp
+
+<details>
+  <summary>Находим файл <b>auth-by-telegram-webapp</b></summary>
+  <img src=".github/images/1.PNG" alt="set3">
+</details>
+
 
 
 ## 🧱 Установка
