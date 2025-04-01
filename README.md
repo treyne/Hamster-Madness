@@ -38,7 +38,7 @@
 2. Установите расширение для браузера **"Hamster Madness 2.0"** .
 <details>
   <summary>Перейдите к боту <b>@Hamster_Game_Dev_bot</b></summary>
-  ![set1](.github/images/0.PNG)
+  <img src=".github/images/0.PNG" alt="set1">
 </details>
 
 4. Нажмите Ctrl+Shift+E (инструменты разработчика -> сеть)
