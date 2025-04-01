@@ -38,18 +38,18 @@
 Установите расширение для браузера **"Hamster Madness 2.0"** .
 <details>
   <summary>Перейдите к боту <b>@Hamster_Game_Dev_bot</b></summary>
-  <img src=".github/images/0.PNG" alt="set1">
+  <img src=".github/images/0-0.PNG" alt="set1">
 </details>
 
 <details>
   <summary>Нажмите Ctrl+Shift+E (инструменты разработчика -> сеть)</summary>
-  <img src=".github/images/1.PNG" alt="set2">
+  <img src=".github/images/0.PNG" alt="set2">
 </details>
 
 
 <details>
   <summary>Нажимаем <b>Play/Играть</b></summary>
-  <img src=".github/images/2.PNG" alt="set3">
+  <img src=".github/images/1.PNG" alt="set3">
 </details>
 
 Находим файл auth-by-telegram-webapp
