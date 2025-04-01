@@ -31,9 +31,9 @@
 
 <details>
   <summary><b>Перейдите к боту @Hamster_Game_Dev_bot</b></summary>
-  <ul>
+
 ![set1](.github/images/1.PNG)
-  </ul>
+
 </details>
 
 
