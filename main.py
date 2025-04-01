@@ -1,3 +1,8 @@
+# :’-(    (つ﹏<。)
+
+
+
+
 import time
 import API.core as core
 # import API.logger as logger
@@ -54,6 +59,53 @@ def main():
             
             
             
+
+            #################################--->Получаем данные о активных ивентах<---###########################################################
+            client = HTTPClient(BASE_URL)
+            GetActive_Events = client.get("/season2/get-active-events")
+            # print(GetActive_Events)
+            # Преобразуем строки в datetime объекты (без Z, так как это UTC)
+            fmt = "%Y-%m-%dT%H:%M:%S.%fZ"
+            startTime = datetime.strptime(GetActive_Events[1][0]['startTime'], fmt)
+            endTime = datetime.strptime(GetActive_Events[1][0]['endTime'], fmt)
+            rewardReleaseTime = datetime.strptime(GetActive_Events[1][0]['rewardReleaseTime'], fmt)
+            logger.info(f"event ID: <blue>{GetActive_Events[1][0]['eventId']}</blue> | startTime: <blue>{startTime}</blue> | endTime: <blue>{endTime}</blue> \n                                      rewardReleaseTime: <blue>{rewardReleaseTime}</blue>")
+            ###############################################################################################################################            
+            
+            
+
+
+            #################################--->Получаем данные о Leaderboard <---###########################################################
+            client = HTTPClient(BASE_URL)
+            leaderboard = client.post("/season2/get-top-of-leaderboard",data={f"eventId":GetActive_Events[1][0]['eventId']})
+            # print (leaderboard)
+            logger.info(f"Leaderboard! Ваша позиция <blue>{leaderboard[1]['position']}</blue> | Рейтинг: <blue>{leaderboard[1]['ratingParameter']}</blue>")
+            ###############################################################################################################################
+
+
+
+
+
+            #################################--->Получаем Bitquest action <---###########################################################
+            client = HTTPClient(BASE_URL)
+            BitQuest_action = client.get("/season2/bitquest-action")
+            # print (BitQuest_action)
+            #logger.info(f"Ваш аккаунт ID: <blue>{AccountInfo['accountInfo']['id']}</blue> | Name: <blue>{AccountInfo['accountInfo']['name']}</blue> | at: <blue>{AccountInfo['accountInfo']['at']}</blue>")
+            ###############################################################################################################################
+
+
+
+            #################################--->Получаем user event rewards <---###########################################################
+            client = HTTPClient(BASE_URL)
+            user_event_rewards = client.post("/season2/user-event-rewards",data={f"eventId":GetActive_Events[1][0]['eventId']})
+            # print (user_event_rewards)
+            logger.info(f"user event rewards - position: <blue>{user_event_rewards[1]['position']}</blue> | rewards: <blue>{user_event_rewards[1]['rewards']}</blue> | rewardsClaimed: <blue>{user_event_rewards[1]['rewardsClaimed']}</blue>")
+            ###############################################################################################################################
+
+
+            
+            
+            
             
             #################################--->Тут наша задача разбудить программистов<---###############################################
             client = HTTPClient(BASE_URL) #Пинаем программистов под зад!
@@ -91,7 +143,7 @@ def main():
 
 
 
-            # #################################Тут работа с ежедневной наградой###########################################################       
+           ###################################Тут работа с ежедневной наградой###########################################################       
             updated_at_str = user["user"]["counters"]["dailyRewardCounter"]["updatedAt"] # Получаем строку с датой
             updated_at = datetime.strptime(updated_at_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=UTC) # Преобразуем её в объект datetime (указываем, что это UTC-время) 
             yesterday = (datetime.now(UTC) - timedelta(days=1)).date() # Определяем вчерашнюю дату в UTC
@@ -107,7 +159,7 @@ def main():
                     logger.error(f"ответа сервера: {ClaimDailyRewards[0]}")
             else:
                 logger.info(f"Ежедневная награда уже получена! | dailyRewardCounter.count = {user["user"]["counters"]["dailyRewardCounter"]["count"]} ")
-            # #################################Закончили работу с ежедневной наградой###########################################################
+            ##################################Закончили работу с ежедневной наградой###########################################################
             
 
             
@@ -133,11 +185,7 @@ def main():
                 
                 
                 
-                
-            #########################--->Тут должны приходит некие promos, но они всегда пустые :’-(    (つ﹏<。)  <---####################             
-            # core.get_promos()
-            # url = f"{BASE_URL}/season2/get-promos"
-            #############################################################################################################################
+                        
             
             
             
@@ -158,7 +206,7 @@ def main():
             
             
             #########################--->Тут будем мутить комбо<---#############################
-            Combo.GetCombo(user,game_cfg[1])
+            # Combo.GetCombo(user,game_cfg[1])
  
  
  
