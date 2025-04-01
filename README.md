@@ -29,6 +29,15 @@
 Прежде чем начать, убедитесь, что у вас установлено следующее:
 - [Python](https://www.python.org/downloads/) 
 
+<details>
+  <summary><b>Перейдите к боту @Hamster_Game_Dev_bot</b></summary>
+  <ul>
+![set1](.github/images/1.PNG)
+  </ul>
+</details>
+
+
+
 
 ## 📃 Получение API ключей
 1. Перейдите на сайт [web.telegram.org](https://web.telegram.org) и войдите в систему. 
