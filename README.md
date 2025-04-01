@@ -34,16 +34,25 @@
 
 
 ## 📃 Получение API ключей
-1. Перейдите на сайт [web.telegram.org](https://web.telegram.org) и войдите в систему. 
-2. Установите расширение для браузера **"Hamster Madness 2.0"** .
+Перейдите на сайт [web.telegram.org](https://web.telegram.org) и войдите в систему. 
+Установите расширение для браузера **"Hamster Madness 2.0"** .
 <details>
   <summary>Перейдите к боту <b>@Hamster_Game_Dev_bot</b></summary>
   <img src=".github/images/0.PNG" alt="set1">
 </details>
 
-4. Нажмите Ctrl+Shift+E (инструменты разработчика -> сеть)
-5. Нажимаем Play/Играть
-6. Находим файл auth-by-telegram-webapp
+<details>
+  <summary>Нажмите Ctrl+Shift+E (инструменты разработчика -> сеть)</summary>
+  <img src=".github/images/1.PNG" alt="set2">
+</details>
+
+
+<details>
+  <summary>Нажимаем <b>Play/Играть</b></summary>
+  <img src=".github/images/2.PNG" alt="set3">
+</details>
+
+Находим файл auth-by-telegram-webapp
 
 
 ## 🧱 Установка
