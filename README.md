@@ -1,5 +1,5 @@
-[<img src="https://img.shields.io/badge/Telegram-%40Me-orange">](https://t.me/sho6ot)
-[<img src="https://img.shields.io/badge/python-3.10%20%7C%203.11-blue">](https://www.python.org/downloads/)
+[<img src="https://img.shields.io/badge/Telegram-%40Me-orange">](https://t.me/Magic0Sparrow)
+[<img src="https://img.shields.io/badge/python-3.10%20%7C%20<-blue">](https://www.python.org/downloads/)
 
 
 
