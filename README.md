@@ -3,7 +3,7 @@
 
 
 
-![demo image](.github/images/cmd.png)
+![logo image](.github/images/cmd.png)
 
 
 ## ⚙ [Настройки](.env-example)
