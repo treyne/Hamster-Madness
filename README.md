@@ -55,7 +55,7 @@
 
 <details>
   <summary>Находим файл <b>auth-by-telegram-webapp</b></summary>
-  <img src=".github/images/1.PNG" alt="set3">
+  <img src=".github/images/2.PNG" alt="set3">
 </details>
 
 
