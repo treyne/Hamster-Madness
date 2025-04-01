@@ -14,7 +14,7 @@
     <li><strong>Пример:</strong></li>
     <code>ID=123</code>
     <br>
-    <code>HASH=420</code>
+
   </ul>
 </details>
 
