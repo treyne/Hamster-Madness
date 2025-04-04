@@ -25,17 +25,14 @@ async def main_stream():
     # Получаем настройки 
     config = configparser.ConfigParser()
     config.read('config.ini')
-    
     # Чтение параметров из секции settings
     set_genre = config.get('settings', 'Genre')
     set_setting  = config.get('settings', 'Setting')
     TIME_LOGIN = config.getint('settings', 'TIME_LOGIN')
-
     APPLY_DAILY_CIPHER = config.getboolean('settings', 'APPLY_DAILY_CIPHER')
-    APPLY_DAILY_REWARD = config.getboolean('settings', 'APPLY_DAILY_REWARD')    
-    APPLY_PROMO_CODES = config.getboolean('settings', 'APPLY_PROMO_CODES') 
+    APPLY_DAILY_REWARD = config.getboolean('settings', 'APPLY_DAILY_REWARD')
     APPLY_COMBO = config.getboolean('settings', 'APPLY_COMBO')    
-    USE_TAPS = config.getboolean('settings', 'USE_TAPS')
+
  
     BASE_URL = "https://api.hamsterkombatgame.io"
     
@@ -255,15 +252,27 @@ async def main_stream():
 
 
 async def PlayGround():
-    while True:
-        logger.warning("Task 2 выполнена")
-        await asyncio.sleep(2.5)
+   # Получаем настройки 
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    APPLY_PROMO_CODES = config.getboolean('settings', 'APPLY_PROMO_CODES') 
+    if APPLY_PROMO_CODES:
+        while True:
+            logger.warning("PlayGround test")
+            await asyncio.sleep(5.5)
+    await asyncio.sleep(5.5)
+
 
 # Третья функция — выполняется каждые 5 секунд
 async def Taps():
-    while True:
-        logger.success("Task 3 выполнена")
-        await asyncio.sleep(5)
+    config = configparser.ConfigParser()
+    config.read('config.ini')    
+    USE_TAPS = config.getboolean('settings', 'USE_TAPS')
+    if USE_TAPS:
+        while True:
+            logger.success("Use taps test")
+            await asyncio.sleep(5)
+    await asyncio.sleep(5)
 
 # Основная функция запускает все задачи параллельно
 async def main():
