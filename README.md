@@ -36,6 +36,7 @@
 ## 📃 Получение API ключей
 Перейдите на сайт [web.telegram.org](https://web.telegram.org) и войдите в систему. 
 Установите расширение для браузера **"Hamster Madness 2.0"** .
+https://addons.mozilla.org/ru/firefox/addon/hamster-madness/
 <details>
   <summary>Перейдите к боту <b>@Hamster_Game_Dev_bot</b></summary>
   <img src=".github/images/0-0.PNG" alt="set1">
