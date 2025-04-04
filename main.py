@@ -1,8 +1,6 @@
 # :’-(    (つ﹏<。)
 
-
-
-
+import configparser
 import time
 import API.core as core
 # import API.logger as logger
@@ -14,8 +12,28 @@ from API import Combo
 
 
 
+
+
+
 def main():
+    # Получаем настройки 
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    
+    # Чтение параметров из секции settings
+    set_genre = config.get('settings', 'Genre')
+    set_setting  = config.get('settings', 'Setting')
+    TIME_LOGIN = config.getint('settings', 'TIME_LOGIN')
+
+    APPLY_DAILY_CIPHER = config.getboolean('settings', 'APPLY_DAILY_CIPHER')
+    APPLY_DAILY_REWARD = config.getboolean('settings', 'APPLY_DAILY_REWARD')    
+    APPLY_PROMO_CODES = config.getboolean('settings', 'APPLY_PROMO_CODES') 
+    APPLY_COMBO = config.getboolean('settings', 'APPLY_COMBO')    
+    USE_TAPS = config.getboolean('settings', 'USE_TAPS')
+ 
     BASE_URL = "https://api.hamsterkombatgame.io"
+    
+    
     while True:
         # try:
         
@@ -143,22 +161,23 @@ def main():
 
 
 
-           ###################################Тут работа с ежедневной наградой###########################################################       
-            updated_at_str = user["user"]["counters"]["dailyRewardCounter"]["updatedAt"] # Получаем строку с датой
-            updated_at = datetime.strptime(updated_at_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=UTC) # Преобразуем её в объект datetime (указываем, что это UTC-время) 
-            yesterday = (datetime.now(UTC) - timedelta(days=1)).date() # Определяем вчерашнюю дату в UTC
-            # Проверяем, сколько прошло времени
-            if updated_at.date() <= yesterday:
-                logger.info(f"Стартуем получение ежедневной награды! ")
-                client = HTTPClient(BASE_URL)
-                ClaimDailyRewards = client.post(f"/season2/command", data={"command":{"type":"ClaimDailyRewards"}})
-                if ClaimDailyRewards[0] == 200:  
-                    logger.success(f"Получили ежедневную награду!")
+           ###################################Тут работа с ежедневной наградой###########################################################
+            if APPLY_DAILY_REWARD:
+                updated_at_str = user["user"]["counters"]["dailyRewardCounter"]["updatedAt"] # Получаем строку с датой
+                updated_at = datetime.strptime(updated_at_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=UTC) # Преобразуем её в объект datetime (указываем, что это UTC-время) 
+                yesterday = (datetime.now(UTC) - timedelta(days=1)).date() # Определяем вчерашнюю дату в UTC
+                # Проверяем, сколько прошло времени
+                if updated_at.date() <= yesterday:
+                    logger.info(f"Стартуем получение ежедневной награды! ")
+                    client = HTTPClient(BASE_URL)
+                    ClaimDailyRewards = client.post(f"/season2/command", data={"command":{"type":"ClaimDailyRewards"}})
+                    if ClaimDailyRewards[0] == 200:  
+                        logger.success(f"Получили ежедневную награду!")
+                    else:
+                        logger.error(f"Не смогли получить ежндневную награду! Код ответа сервера: {ClaimDailyRewards[0]}")
+                        logger.error(f"ответа сервера: {ClaimDailyRewards[0]}")
                 else:
-                    logger.error(f"Не смогли получить ежндневную награду! Код ответа сервера: {ClaimDailyRewards[0]}")
-                    logger.error(f"ответа сервера: {ClaimDailyRewards[0]}")
-            else:
-                logger.info(f"Ежедневная награда уже получена! | dailyRewardCounter.count = {user["user"]["counters"]["dailyRewardCounter"]["count"]} ")
+                    logger.info(f"Ежедневная награда уже получена! | dailyRewardCounter.count = {user["user"]["counters"]["dailyRewardCounter"]["count"]} ")
             ##################################Закончили работу с ежедневной наградой###########################################################
             
 
@@ -169,8 +188,6 @@ def main():
             
             #########################--->А вот тут живёт Zoi которая подрабатывает PM'ом вместо Анны <---#############################
             #########################--->Работает 24/7 и заряжает те проекты которые ты укажешь <---#############################
-            set_genre = "Tycoon"
-            set_setting = "Sports"
             
             current_genre = user['user']['game']['genre']
             logger.info(f"Текущий жанр <green>{current_genre}</green> ")
@@ -191,26 +208,30 @@ def main():
             
             
             #########################--->Декодирование и ввод шифра<---#############################
-            CipherStatus,decoded_Cipher = core.dailyCiphers(game_cfg[1],user)
-            if CipherStatus and decoded_Cipher:
-                client = HTTPClient("https://api.hamsterkombatgame.io")
-                dailyCiphers = client.post(f"/season2/command", data={"command":{"type":"ClaimDailyCipher","cipher":decoded_Cipher}})  
-                if dailyCiphers[0] == 200:
-                    logger.success(f"Шифр успешно введён: <green>{decoded_Cipher}</green> ")
-                else:
-                    logger.info(f"{dailyCiphers[0]}")
-                print ("\n")               
+            if APPLY_DAILY_CIPHER:
+                CipherStatus,decoded_Cipher = core.dailyCiphers(game_cfg[1],user)
+                if CipherStatus and decoded_Cipher:
+                    client = HTTPClient("https://api.hamsterkombatgame.io")
+                    dailyCiphers = client.post(f"/season2/command", data={"command":{"type":"ClaimDailyCipher","cipher":decoded_Cipher}})  
+                    if dailyCiphers[0] == 200:
+                        logger.success(f"Шифр успешно введён: <green>{decoded_Cipher}</green> ")
+                    else:
+                        logger.info(f"{dailyCiphers[0]}")
+                    print ("\n")               
             #########################################################################################
             
             
             
             
+            
+            
             #########################--->Тут будем мутить комбо<---#############################
-            # Combo.GetCombo(user,game_cfg[1])
+            if APPLY_COMBO:
+                Combo.GetCombo(user,game_cfg[1])
  
  
  
-            core.countdown_timer(random.randint(197, 200),'До следующего логина: ')
+            core.countdown_timer(random.randint(TIME_LOGIN+5, TIME_LOGIN+10),'До следующего логина: ')
             time.sleep(3)
         # except Exception as error:
             # print(f'Ошибка {error}')
