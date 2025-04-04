@@ -1,4 +1,8 @@
-# :’-(    (つ﹏<。)
+# # :’-(    (つ﹏<。)
+# Этот код создавался с целью попрактиковаться в питоне.
+# Автор: Magick Sparrow
+# ༼ つ ◕_◕ ༽つ give me feed back
+
 
 import configparser
 import time
@@ -9,13 +13,15 @@ import random
 from datetime import datetime, timedelta, UTC
 from API.http_client import HTTPClient
 from API import Combo
+import asyncio
 
 
 
 
 
 
-def main():
+
+async def main_stream():
     # Получаем настройки 
     config = configparser.ConfigParser()
     config.read('config.ini')
@@ -217,7 +223,9 @@ def main():
                         logger.success(f"Шифр успешно введён: <green>{decoded_Cipher}</green> ")
                     else:
                         logger.info(f"{dailyCiphers[0]}")
-                    print ("\n")               
+                    print ("\n")
+                else:
+                    logger.success(f"Ввод шифра не требуется! Декодированная строка: <green>{decoded_Cipher}</green> ")
             #########################################################################################
             
             
@@ -231,15 +239,59 @@ def main():
  
  
  
-            core.countdown_timer(random.randint(TIME_LOGIN+5, TIME_LOGIN+10),'До следующего логина: ')
-            time.sleep(3)
+            # core.countdown_timer(random.randint(TIME_LOGIN+5, TIME_LOGIN+10),'До следующего логина: ')
+            # time.sleep(random.randint(TIME_LOGIN+5, TIME_LOGIN+10))
         # except Exception as error:
             # print(f'Ошибка {error}')
-            time.sleep(50)
-            
+            # time.sleep(50)
+            TimeWait_main_stream = random.randint(TIME_LOGIN+5, TIME_LOGIN+10)
+            logger.info(f"До следующего логина: {TimeWait_main_stream}c")
+            await asyncio.sleep(TimeWait_main_stream)
 
 
-main()
+
+
+
+
+
+async def PlayGround():
+    while True:
+        logger.warning("Task 2 выполнена")
+        await asyncio.sleep(2.5)
+
+# Третья функция — выполняется каждые 5 секунд
+async def Taps():
+    while True:
+        logger.success("Task 3 выполнена")
+        await asyncio.sleep(5)
+
+# Основная функция запускает все задачи параллельно
+async def main():
+    await asyncio.gather(
+        main_stream(),
+        PlayGround(),
+        Taps()
+    )
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
