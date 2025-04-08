@@ -136,15 +136,8 @@ def TmZ(data):
 
 async def checkTime(config):
     BASE_URL = "https://api.hamsterkombatgame.io"
-    
     client = HTTPClient("https://api.bitquest.games/",follow_redirects=True)
     status,bitquest = client.post("bitquest/sync",BitQuest=True)
-    
-    # status,bitquest = core.bitquest() 
-    
-    # client = HTTPClient("https://httpbin.org",follow_redirects=True)
-    # status,bitquest = client.post("/post",BitQuest=True)
-    print (bitquest)
     if status != 200:
         logger.error(f"Получение данных BitQuest провалено!  | статус ответа: {status}")
         return False
