@@ -3,7 +3,6 @@ import httpx
 import random
 import uuid
 import os
-import API.core as core
 from datetime import datetime, timedelta, timezone
 import json
 from API.logger import logger
@@ -11,19 +10,20 @@ from API.http_client import HTTPClient
 
 
 
-DEBUG = False
+DEBUG = True
 LOG_ON = False
 
 configurations = [
     {'app_token': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054', 'promo_id': 'ed526e8c-e6c8-40fd-b72a-9e78ff6a2054','rnd1':'80','rnd2':'120','game':'Cooking Stories'}, 
     {'app_token': '8d1cc2ad-e097-4b86-90ef-7a27e19fb833', 'promo_id': 'dc128d28-c45b-411c-98ff-ac7726fbaea4','rnd1':'80','rnd2':'120','game':'Merge Away'},
-    {'app_token': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df', 'promo_id': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df','rnd1':'80','rnd2':'120','game':'Draw To Smash'}, 
+    #{'app_token': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df', 'promo_id': 'ab93d8d2-bd0b-47c9-98f6-e202f900b5df','rnd1':'80','rnd2':'120','game':'Draw To Smash'}, 
     {'app_token': 'd02fc404-8985-4305-87d8-32bd4e66bb16', 'promo_id': 'd02fc404-8985-4305-87d8-32bd4e66bb16','rnd1':'80','rnd2':'120','game':'Factory World'},         
     {'app_token': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff', 'promo_id': '13f7bd7c-b4b3-41f1-9905-a7db2e814bff','rnd1':'80','rnd2':'120','game':'Merge Dale'},         
-    {'app_token': 'e53b902b-d490-406f-9770-21a27fff1d31', 'promo_id': 'e53b902b-d490-406f-9770-21a27fff1d31','rnd1':'80','rnd2':'120','game':'Doodle God'},     
-    {'app_token': 'bc72d3b9-8e91-4884-9c33-f72482f0db37', 'promo_id': 'bc72d3b9-8e91-4884-9c33-f72482f0db37','rnd1':'80','rnd2':'120','game':'Bouncemasters'},         
-    {'app_token': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b', 'promo_id': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b','rnd1':'80','rnd2':'120','game':'Zoopolis'},     
-    {'app_token': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71', 'promo_id': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71','rnd1':'80','rnd2':'120','game':'Polysphere'},     
+    {'app_token': 'e53b902b-d490-406f-9770-21a27fff1d31', 'promo_id': 'e53b902b-d490-406f-9770-21a27fff1d31','rnd1':'80','rnd2':'120','game':'Doodle God'},
+    {'app_token': 'f23d4a18-2c55-4a0c-ba22-2c17bb04969c', 'promo_id': 'f23d4a18-2c55-4a0c-ba22-2c17bb04969c','rnd1':'80','rnd2':'120','game':'Jelly Cubes'},
+    #{'app_token': 'bc72d3b9-8e91-4884-9c33-f72482f0db37', 'promo_id': 'bc72d3b9-8e91-4884-9c33-f72482f0db37','rnd1':'80','rnd2':'120','game':'Bouncemasters'},         
+    #{'app_token': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b', 'promo_id': 'b2436c89-e0aa-4aed-8046-9b0515e1c46b','rnd1':'80','rnd2':'120','game':'Zoopolis'},     
+    #{'app_token': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71', 'promo_id': '2aaf5aee-2cbc-47ec-8a3f-0962cc14bc71','rnd1':'80','rnd2':'120','game':'Polysphere'},     
     #{'app_token': 'd1690a07-3780-4068-810f-9b5bbf2931b2', 'promo_id': 'b4170868-cef0-424f-8eb9-be0622e8e8e3','rnd1':'20','rnd2':'30','game':'Chain Cube 2048'},     
     #{'app_token': '82647f43-3f87-402d-88dd-09a90025313f', 'promo_id': 'c4480ac7-e178-4973-8061-9ed5b2e17954','rnd1':'125','rnd2':'140','game':'Train Miner'},   
     #{'app_token': 'eb518c4b-e448-4065-9d33-06f3039f0fcb', 'promo_id': 'eb518c4b-e448-4065-9d33-06f3039f0fcb','rnd1':'100','rnd2':'122','game':'Infected Frontier'},  
@@ -31,31 +31,21 @@ configurations = [
     
 ]
 
-def debug_print(*args):
-    if DEBUG:
-        print(*args)
 
-def LOG(*args):
-    if LOG_ON:
-        current_time = datetime.now()
-        file_name = f"PlayGround_{current_time.strftime('%d.%m.%Y_%H-%M')}.txt"
-        try:
-            with open(file_name, 'a', encoding='utf-8') as file:
-                file.write(' '.join(map(str, args)) + '\n')
-        except Exception as e:
-            print(f"Error writing to file: {e}")
+
+
 
 def generate_client_id():
     timestamp = int(datetime.now().timestamp() * 1000)
     random_numbers = ''.join(str(random.randint(0, 9)) for _ in range(19))
     return f"{timestamp}-{random_numbers}"
 
-async def login_client(app_token):
+async def login_client(app_token,DEBUG=False):
     client_id = generate_client_id()
     try:
         async with httpx.AsyncClient(http2=True, timeout=30) as client:
             response = await client.post(
-                'https://api.gamepromo.io/promo/login-client',
+                'https://api.bitquest.games/promo/1/login-client',
                 json={
                     'appToken': app_token,
                     'clientId': client_id,
@@ -68,7 +58,7 @@ async def login_client(app_token):
             logger.success(f"login-client [clientToken] =  {data['clientToken']}")
             return data['clientToken']
     except httpx.RequestError as error:
-        LOG(f'Ошибка при входе клиента: {error}')
+        logger.error(f"Ошибка при входе клиента: {error}")
         await asyncio.sleep(20)
         return await login_client(app_token)
 
@@ -77,7 +67,7 @@ async def register_event(token, promo_id, delay):
     try:
         async with httpx.AsyncClient(http2=True, timeout=30) as client:
             response = await client.post(
-                'https://api.gamepromo.io/promo/register-event',
+                'https://api.bitquest.games/promo/1/register-event',
                 json={'promoId': promo_id, 'eventId': event_id, 'eventOrigin': 'undefined'},
                 headers={
                     'Authorization': f'Bearer {token}',
@@ -86,12 +76,14 @@ async def register_event(token, promo_id, delay):
             )
             response.raise_for_status()
             data = response.json()
+            if DEBUG:
+                print (data)
             if not data.get('hasCode', False):
                 await asyncio.sleep(random.randint(delay[0], delay[1]))
                 return await register_event(token, promo_id, delay)
             return True
     except httpx.RequestError as error:
-        LOG(f'Ошибка при register_event: {error}')
+        logger.error(f"Ошибка при входе клиента: {error}")
         await asyncio.sleep(120)
         return await register_event(token, promo_id, delay)
 
@@ -115,8 +107,11 @@ async def create_code(token, promo_id):
             await asyncio.sleep(120)
 
 async def genCode(config):
-    token = await login_client(config['app_token'])
+    token = await login_client(config['app_token'],DEBUG)
     await asyncio.sleep(random.randint(80, 100))
+    if DEBUG:
+        logger.debug(f"Дальше в дело должен вступить register_event")
+    
     await register_event(token, config['promo_id'], (int(config['rnd1']), int(config['rnd2'])))
     code_data = await create_code(token, config['promo_id'])
     logger.success(f"Сгенерированный код для {config['game']}: {code_data}")
@@ -179,7 +174,7 @@ async def checkTime(config):
                 return True
     return True
 
-async def main():
+async def PlayGroundRUN():
     PlayGround = True
     while PlayGround:
         for config in configurations:
@@ -200,4 +195,9 @@ async def main():
         await asyncio.sleep(wait_time)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(PlayGroundRUN())
+
+#
+#https://api.bitquest.games/promo/1/get-client
+#https://api.bitquest.games/promo/1/register-event
+#https://api.bitquest.games/promo/1/create-code
