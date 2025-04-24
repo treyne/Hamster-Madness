@@ -1,0 +1,37 @@
+fetch("https://api.hamsterkombatgame.io/season2/command", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+    "authorization": "Bearer 1743587903340J0IaY0URpfsdevD7Gu9yCW7IgXsDamovGYOBuvRJDV4FbcKct7HOclBNjTQq3UNF2098274601",
+    "content-type": "application/json",
+    "sec-ch-ua": "\"Not A(Brand\";v=\"8\", \"Chromium\";v=\"132\"",
+    "sec-ch-ua-mobile": "?1",
+    "sec-ch-ua-platform": "\"Android\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-site"
+  },
+  "referrer": "https://season2.hamsterkombatgame.io/",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": "{\"command\":{\"type\":\"ClaimBitQuestActionRewards\",\"stage\":\"stageOne\"}}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});
+
+
+
+{
+    "command": {
+        "type": "ClaimBitQuestActionRewards",
+        "stage": "stageOne"
+    }
+}
+
+
+{
+    "command": {
+        "type": "ClaimBitQuestActionRewards",
+        "stage": "stageTwo"
+    }
+}
