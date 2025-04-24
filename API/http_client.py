@@ -34,18 +34,18 @@ class HTTPClient:
             print(f"Непредвиденная ошибка: {e}")
         return None
 
-    def get(self, endpoint: str, params: dict = None, headers: dict = None, sync=False):
-        request_headers = headers if headers else get_headers("GET")
+    def get(self, endpoint: str, params: dict = None, headers: dict = None, sync=False, BitQuest=False):
+        request_headers = headers if headers else get_headers("GET", BitQuest=BitQuest)
         response = self.client.get(f"{self.base_url}{endpoint}", params=params, headers=request_headers)
         return self._handle_response(response, sync)
 
-    def post(self, endpoint: str, data: dict = None, headers: dict = None, sync=False):
-        request_headers = headers if headers else get_headers("POST")
+    def post(self, endpoint: str, data: dict = None, headers: dict = None, sync=False, BitQuest=False):
+        request_headers = headers if headers else get_headers("POST", BitQuest=BitQuest)
         response = self.client.post(f"{self.base_url}{endpoint}", json=data, headers=request_headers)
         return self._handle_response(response, sync)
 
-    def options(self, endpoint: str, headers: dict = None, sync=False):
-        request_headers = headers if headers else get_headers("OPTIONS")
+    def options(self, endpoint: str, headers: dict = None, sync=False, BitQuest=False):
+        request_headers = headers if headers else get_headers("OPTION", BitQuest=BitQuest)
         response = self.client.options(f"{self.base_url}{endpoint}", headers=request_headers)
         return self._handle_response(response, sync)
 
