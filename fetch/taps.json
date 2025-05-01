@@ -1,0 +1,14 @@
+
+
+https://api.hamsterkombatgame.io/season2/command
+{
+	"command": {
+		"funProgress": 7140000,
+		"progress": {
+			"ART": 28672,
+			"DEV": 32768,
+			"GD": 34304
+		},
+		"type": "ApplyTaps"
+	}
+}
