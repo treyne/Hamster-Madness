@@ -1,0 +1,8 @@
+https://api.hamsterkombatgame.io/season2/command
+
+
+{
+	"command": {
+		"type": "UpgradeClicker"
+	}
+}
